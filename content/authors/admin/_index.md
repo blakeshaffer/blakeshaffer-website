@@ -19,10 +19,14 @@ interests:
 - Climate policy
 - Energy transitions
 name: Blake Shaffer
+role: Assistant Professor of Economics and Public Policy
 organizations:
-- name: University of Calgary
+- name: Department of Economics
   url: "http://econ.ucalgary.ca"
-role: Assistant Professor of Economics
+- name: School of Public Policy
+  url: "http://www.policyschool.ca"
+- name: University of Calgary
+  url: "http://www.ucalgary.ca"
 social:
 - icon: envelope
   icon_pack: fas
@@ -46,5 +50,5 @@ Blake Shaffer is an assistant professor in the department of economics and schoo
 
 Prior to returning to academia, Shaffer had a 15 year career in energy trading, specializing in electricity, natural gas and emissions markets. He holds a PhD in economics from the University of Calgary, Master of Philosophy in economics from the University of Cambridge and a bachelor’s degree in environmental sciences from Queen’s University. He has recently held visiting scholar and Fulbright postdoctoral scholar positions at the Toulouse School of Economics and Stanford University.
 
-His recent research has been published in the American Economic Journal: Economic Policy, Canadian Journal of Economics and the Energy Journal. His popular writing has appeared in the Globe and Mail, Maclean’s, Postmedia, CBC, and other media outlets. Shaffer has also served as policy advisor for the governments of Alberta, British Columbia and Canada on energy and environmental policy matters.
+His recent research has been published in the American Economic Journal: Economic Policy, Canadian Journal of Economics and the Energy Journal. His popular writing has appeared in the Globe and Mail, Maclean’s, Postmedia, CBC, and other media outlets. Shaffer has also served as policy advisor for the governments of Alberta, British Columbia and Canada on various energy and environmental policy matters.
 
