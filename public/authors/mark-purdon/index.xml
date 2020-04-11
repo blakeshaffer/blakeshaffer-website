@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mark Purdon | Blake Shaffer</title>
+    <link>/authors/mark-purdon/</link>
+      <atom:link href="/authors/mark-purdon/index.xml" rel="self" type="application/rss+xml" />
+    <description>Mark Purdon</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© `2020`</copyright><lastBuildDate>Fri, 01 Apr 2016 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/Blake-9943_small.jpg</url>
+      <title>Mark Purdon</title>
+      <link>/authors/mark-purdon/</link>
+    </image>
+    
+    <item>
+      <title>The Political Economy of Free Allocations in Revenue Recycling: Six Position Papers on the Options for Recycling Carbon Pricing Revenue</title>
+      <link>/publication/ecofiscal2016/</link>
+      <pubDate>Fri, 01 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/ecofiscal2016/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

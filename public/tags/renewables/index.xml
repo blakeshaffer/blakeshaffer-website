@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>renewables | Blake Shaffer</title>
+    <link>/tags/renewables/</link>
+      <atom:link href="/tags/renewables/index.xml" rel="self" type="application/rss+xml" />
+    <description>renewables</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© `2020`</copyright><lastBuildDate>Thu, 01 Sep 2016 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/Blake-9943_small.jpg</url>
+      <title>renewables</title>
+      <link>/tags/renewables/</link>
+    </image>
+    
+    <item>
+      <title>The Challenge of Integrating Renewable Generation in the Alberta Electricity Market</title>
+      <link>/publication/spp_electricityroundtable_summarypaper_2016/</link>
+      <pubDate>Thu, 01 Sep 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/spp_electricityroundtable_summarypaper_2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Lifting the hood on Alberta’s royalty review</title>
+      <link>/publication/spp_royaltyreview_2016/</link>
+      <pubDate>Mon, 01 Feb 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/spp_royaltyreview_2016/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

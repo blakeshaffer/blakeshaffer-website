@@ -20,7 +20,7 @@ summary: The primary rationale for daylight saving time (DST) has long been ener
 tags:
 - electricity demand
 - daylight saving time
-title: "Stretching the Duck: How rising temperatures will change the level and shape of future electricity consumption"
+title: "Location matters: Daylight saving time and electricity demand"
 url_code: ""
 url_dataset: ""
 url_pdf: "https://onlinelibrary.wiley.com/doi/abs/10.1111/caje.12407?af=R"

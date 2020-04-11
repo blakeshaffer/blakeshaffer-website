@@ -1,0 +1,307 @@
+---
+title: Canada’s aging population
+author: Blake Shaffer
+date: '2019-01-27'
+output:
+  html_document:
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+    code_folding: hide
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+always_allow_html: yes
+slug: canada-s-aging-population
+categories:
+  - social
+  - population
+tags:
+  - population
+twitterImg: post/2019-01-27-canada-s-aging-population_files/figure-html/unnamed-chunk-2-1.png
+header:
+  caption: ''
+  image: ''
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE, cache=TRUE)
+library(tidyverse)
+library(cansim)
+library(ggthemes)
+library(ggrepel)
+```
+
+Recently released data from Statistics Canada allows us to explore demographic trends in the age make-up of the Canadian population. The trend is clear: Canada is getting old.
+
+In this chart-blog, we will take a look at population by age group -- both across regions and over time -- and how median age has evolved. (Spoiler: It's risen. A lot!)
+
+For those interested in how to create these graphs in R, all the **code** can be seen by clicking the `code` button running along the side of each section.
+
+```{r, cache=TRUE}
+data <- get_cansim(17100005) %>% normalize_cansim_values()
+age.keep <- c(
+  "0 to 4 years",
+  "5 to 9 years",
+  "10 to 14 years",
+  "15 to 19 years",
+  "20 to 24 years",
+  "25 to 29 years",
+  "30 to 34 years",
+  "35 to 39 years",
+  "40 to 44 years",
+  "45 to 49 years",
+  "50 to 54 years",
+  "55 to 59 years",
+  "60 to 64 years",
+  "65 to 69 years",
+  "70 to 74 years",
+  "75 to 79 years",
+  "80 to 84 years",
+  "85 to 89 years",
+  "90 to 94 years",
+  "95 to 99 years",
+  "100 years and over"
+)
+```
+
+# Then and now: 1971 vs 2018 {.tabset .tabset-fade}
+
+These charts show the share of total population in each age group, separately for men (blue) and women (red). What was once known as an **age pyramid** now looks more like an ominous **age torpedo**!
+
+```{r twoplots}
+df <- data %>%
+  mutate(Year=as.integer(REF_DATE)) %>%
+  filter(Sex!="Both sexes",
+         `Age group` %in% age.keep,
+         Year %in% c(1971,2018)) %>%
+  group_by(Year,GEO) %>%
+  mutate(`Age share` = VALUE/sum(VALUE))
+df$`Age group` <- factor(df$`Age group`, levels=age.keep)
+
+twoplot <- function(p){
+  ggplot()+
+    geom_col(data=df %>% filter(GEO==p,Sex=="Males"),
+             aes(`Age group`,`Age share`),fill="#2b83ba")+
+    geom_col(data=df %>% filter(GEO==p,Sex=="Females"),
+             aes(`Age group`,-`Age share`),fill="#d7191c")+
+    annotate("text",x=21,y=-.02,label="Women",family="Lato",size=4,color="#d7191c")+
+    annotate("text",x=21,y=.02,label="Men",family="Lato",size=4,color="#2b83ba")+
+    facet_wrap(~Year)+
+    coord_flip()+
+    scale_y_continuous(breaks=c(-.05,0,.05),
+                       label=scales::percent)+
+    theme_tufte(14,"Lato")+
+    theme(axis.ticks = element_blank(),
+          plot.caption = element_text(size=8))+
+    labs(y="Share of population",x="",
+         title=paste0("Population by age group, ",p),
+         caption="Source: Statistics Canada NDM 17-10-0005\nChart by @bcshaffer")
+}
+```
+
+## Canada
+```{r}
+twoplot("Canada")
+```
+
+## BC
+```{r}
+twoplot("British Columbia")
+```
+
+## AB
+```{r}
+twoplot("Alberta")
+```
+
+## SK
+```{r}
+twoplot("Saskatchewan")
+```
+
+## MB
+```{r}
+twoplot("Manitoba")
+```
+
+## ON
+```{r}
+twoplot("Ontario")
+```
+
+## QC
+```{r}
+twoplot("Quebec")
+```
+
+## NB
+```{r}
+twoplot("New Brunswick")
+```
+
+## PE
+```{r}
+twoplot("Prince Edward Island")
+```
+
+## NS
+```{r}
+twoplot("Nova Scotia")
+```
+
+## NL
+```{r}
+twoplot("Newfoundland and Labrador")
+```
+
+## YT
+```{r}
+twoplot("Yukon")
+```
+
+# Northwest Territories and Nunavut {.tabset .tabset-fade}
+For the Northwest Territories and Nunavut, the picture is very different. Since we don't have data separately for each territory in 1971 (Nunavut was officially separated from the NWT in 1999), we can take a look at NWT *including Nunavut* in 1971, vs the two separate territories today.
+
+## NWT incl. Nunavut (1971)
+```{r}
+twoplot("Northwest Territories including Nunavut")
+```
+
+## Northwest Territories (2018)
+```{r}
+twoplot("Northwest Territories")
+```
+
+## Nunavut (2018)
+```{r}
+twoplot("Nunavut")
+```
+
+# Median age
+Another way to see the aging of the population is to look at how the **median age** has changed over the years. Here's median age for Canada, from 1971 to 2018.
+
+## Canada
+```{r}
+d.median <- data %>%
+  filter(`Age group`=="Median age") %>%
+  mutate(Year=as.integer(REF_DATE))
+
+d.median.label <- d.median %>%
+  filter(Year %in% c(1971,2018),GEO=="Canada",Sex=="Both sexes")
+
+ggplot(d.median %>% filter(GEO=="Canada"))+
+  geom_line(aes(Year,VALUE,color=Sex,linetype=Sex),size=1.2)+
+  geom_label(data=d.median.label,
+            aes(Year,VALUE,label=VALUE),
+            hjust=ifelse(d.median.label$Year==1971,1.1,-.1),
+            family="Lato")+
+  scale_x_continuous(limits=c(1970,2020))+
+  scale_linetype_discrete(name="")+
+  scale_color_manual(name="",values=c("Black","Red","Blue"))+
+  theme_hc(14,"Lato")+
+  theme(axis.ticks = element_blank(),
+        plot.caption=element_text(size=9))+
+  labs(y="",x="",
+       title="Median age in Canada, 1971 to 2018",
+       caption="Source: Statistics Canada NDM 17-10-0005\nChart by @bcshaffer")
+```
+
+## All regions
+```{r}
+short_prov <- c(
+  "British Columbia"="BC",
+  "Alberta"="AB",
+  "Saskatchewan"="SK",
+  "Manitoba"="MB",
+  "Ontario"="ON",
+  "Quebec"="QC",
+  "New Brunswick"="NB",
+  "Prince Edward Island"="PE",
+  "Nova Scotia"="NS",
+  "Newfoundland and Labrador"="NL",
+  "Yukon"="YT",
+  "Northwest Territories"="NT",
+  "Nunavut"="NU",
+  "Northwest Territories including Nunavut"="NTNU",
+  "Canada"="CAN")
+
+d.median <- d.median %>%
+  mutate(GEO.abb=short_prov[GEO],
+         GEO.abb=factor(GEO.abb, levels=c("CAN","BC","AB","SK","MB","ON","QC","NB","PE","NS","NL","YT","NTNU","NT","NU")))
+
+ggplot(d.median, aes(Year,VALUE,color=Sex))+
+  geom_line()+
+  scale_color_manual(name="",values=c("Black","Red","Blue"))+
+  scale_x_continuous(breaks=c(1970,1990,2010))+
+  facet_wrap(~GEO.abb)+
+  theme_hc(12,"Lato")+
+  labs(y="",x="",
+       title="Median age, 1971 to 2018")
+```
+
+# Animated age pyramid
+
+I made an animated chart of the age pyramid and posted it on twitter:
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Canadian population by age, 1971-2018. Follow the Baby Boomer Bulge!<a href="https://twitter.com/hashtag/cdnecon?src=hash&amp;ref_src=twsrc%5Etfw">#cdnecon</a> <a href="https://twitter.com/hashtag/cdnpoli?src=hash&amp;ref_src=twsrc%5Etfw">#cdnpoli</a> <a href="https://t.co/KStrjgg6Nh">pic.twitter.com/KStrjgg6Nh</a></p>&mdash; Blake Shaffer 📊 (@bcshaffer) <a href="https://twitter.com/bcshaffer/status/1088826624835870720?ref_src=twsrc%5Etfw">January 25, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+This chart drew a lot of hits and a lot of commentary on twitter. Some noted how this shift in ages to a "top heavy pyramid" would put strains on pensions and health care costs:
+
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">Ultimately, do you think this causes any risks associated with things like Health Care, or CPP? Are they sustainable as this group both ages, and lives longer due to better modern medicine?</p>&mdash; Kevin Frankiw (@Franks_Five) <a href="https://twitter.com/Franks_Five/status/1088827201603002368?ref_src=twsrc%5Etfw">January 25, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+Others noted how the animated chart allowed for a clear visual of the Baby Boomers over time and the emergence of the Echo Boom:
+
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">And by the end of the gif, you can even make out the baby boom echo</p>&mdash; Steve Niles (@SteveNilesCBC) <a href="https://twitter.com/SteveNilesCBC/status/1088827531711692801?ref_src=twsrc%5Etfw">January 25, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+And some astute observers commented on the dearth of population share for the Gen Xers:
+
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">We Gen-Xers are so nice and trim.</p>&mdash; Todd Babiak (@babiak) <a href="https://twitter.com/babiak/status/1088827933274165248?ref_src=twsrc%5Etfw">January 25, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+Anyways, here's that animated chart with the code to make it using `gganimate`:
+
+```{r animation}
+library(gganimate)
+df2 <- data %>%
+  mutate(Year=as.integer(REF_DATE)) %>%
+  filter(Sex!="Both sexes",
+         `Age group` %in% age.keep) %>%
+  group_by(Year,GEO) %>%
+  mutate(`Age share` = VALUE/sum(VALUE))
+df2$`Age group` <- factor(df2$`Age group`, levels=age.keep)
+
+p <- ggplot()+
+  geom_col(data=df2 %>% filter(Sex=="Males",GEO=="Canada"),
+           aes(`Age group`,`Age share`),fill="#2b83ba")+
+  geom_col(data=df2 %>% filter(Sex=="Females",GEO=="Canada"),
+           aes(`Age group`,-`Age share`),fill="#d7191c")+
+  annotate("text",x=19,y=-.03,label="Women",family="Lato",size=6,color="#d7191c")+
+  annotate("text",x=19,y=.03,label="Men",family="Lato",size=6,color="#2b83ba")+
+  coord_flip()+
+  scale_y_continuous(breaks=c(-.06,-.03,0,.03,.06),
+                     label=c("6%","3%","0%","3%","6%"))+
+  theme_tufte(14,"Lato")+
+  theme(axis.ticks = element_blank(),
+        plot.caption = element_text(size=8))+
+  labs(y="Share of population",x="Age group",
+       title=paste0("Canadian population by age, ","{frame_time}"),
+       caption="Source: Statistics Canada NDM 17-10-0005\nChart by @bcshaffer")+
+  transition_time(Year)+
+  ease_aes("linear")
+
+animate(p, nframes = 100, fps = 3, end_pause = 30)
+```
+
+**Happy charting!**
+
+*- Blake*
+
+
+
+
+
+

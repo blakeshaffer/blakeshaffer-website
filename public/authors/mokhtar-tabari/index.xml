@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mokhtar Tabari | Blake Shaffer</title>
+    <link>/authors/mokhtar-tabari/</link>
+      <atom:link href="/authors/mokhtar-tabari/index.xml" rel="self" type="application/rss+xml" />
+    <description>Mokhtar Tabari</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© `2020`</copyright><lastBuildDate>Wed, 01 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/Blake-9943_small.jpg</url>
+      <title>Mokhtar Tabari</title>
+      <link>/authors/mokhtar-tabari/</link>
+    </image>
+    
+    <item>
+      <title>Paying for performance: The role of policy in energy storage deployment</title>
+      <link>/publication/shaffertabariwp2020/</link>
+      <pubDate>Wed, 01 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>/publication/shaffertabariwp2020/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

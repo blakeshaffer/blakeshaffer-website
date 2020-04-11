@@ -1,0 +1,186 @@
+---
+title: New Statscan data on victims of violent crime in Canada
+author: Blake Shaffer
+date: '2018-12-06'
+slug: new-statscan-data-on-victims-of-violent-crime
+categories:
+  - social
+tags:
+  - crime
+  - gender
+twitterImg: post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-11-4.png
+header:
+  caption: ''
+  image: ''
+---
+
+
+
+<p>Statistics Canada recently released new data on victims of violent crime across Canada from 2009 to 2017. In this post, I explore trends in this data by region, age and gender.</p>
+<p>I find, unsurprisingly, big differences in incidence by gender. The rate of violent crime, notably sexual assaults, remains extremely skewed towards women. The rate of violent crime causing death and attempted murder is skewed towards men but remains relatively low in Canada. <strong>Alarmingly, the rate of sexual assaults towards young girls is high and climbing.</strong> Regional splits also show concerning trends in certain regions.</p>
+<hr />
+<p>Let’s start by pulling in the data which can be found in NDM table 35-10-0051.</p>
+<pre class="r"><code>library(tidyverse)
+library(cansim)
+library(ggthemes)
+
+data &lt;- get_cansim(35100051) %&gt;% normalize_cansim_values() %&gt;%
+  mutate(year = as.numeric(REF_DATE))
+data$GEO &lt;- factor(data$GEO, levels=c(&quot;Canada&quot;,
+                                      &quot;British Columbia&quot;,
+                                      &quot;Alberta&quot;,
+                                      &quot;Saskatchewan&quot;,
+                                      &quot;Manitoba&quot;,
+                                      &quot;Ontario&quot;,
+                                      &quot;Quebec&quot;,
+                                      &quot;New Brunswick&quot;,
+                                      &quot;Prince Edward Island&quot;,
+                                      &quot;Nova Scotia&quot;,
+                                      &quot;Newfoundland and Labrador&quot;,
+                                      &quot;Yukon&quot;,
+                                      &quot;Northwest Territories&quot;,
+                                      &quot;Nunavut&quot;))</code></pre>
+<p>To start, let’s look at Canada-wide total violations, by gender:</p>
+<pre class="r"><code>plotdata &lt;- data %&gt;%
+  filter( `Sex of victim`!=&quot;Total, sex of victim&quot;,
+          `Sex of victim`!=&quot;Sex of victim unknown&quot;,
+          `Age of victim`==&quot;Total, age of victim&quot;,
+          Statistics==&quot;Rate per 100,000 population&quot;,
+          GEO==&quot;Canada&quot;,
+          Violations==&quot;Total, all violations&quot;)
+ggplot(plotdata,
+       aes(Date,VALUE, group=`Sex of victim`, color=`Sex of victim`))+
+  geom_line(size=1.5)+
+  theme_light(12,&quot;Avenir&quot;)+
+  scale_color_manual(name=&quot;&quot;,values=c(&quot;#CC6677&quot;,&quot;#4477AA&quot;))+
+  theme(legend.position = &quot;top&quot;)+
+  labs(x=&quot;&quot;,y=&quot;Rate per 100,000 population&quot;,
+       title=&quot;Victims of police-reported violent crime&quot;,
+       subtitle=&quot;Total, all ages&quot;,
+       caption=&quot;Source: Statistics Canada NDM 35-10-0051\nChart by @bcshaffer&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>We can dig a little deeper and see how this breaks down by age group:</p>
+<pre class="r"><code># by age
+plotdata &lt;- data %&gt;%
+  filter( `Sex of victim`!=&quot;Total, sex of victim&quot;,
+          `Sex of victim`!=&quot;Sex of victim unknown&quot;,
+          `Age of victim` %in% c(&quot;Under 12 years&quot;,
+                                 &quot;12 to 17 years&quot;,
+                                 &quot;18 years and over&quot;),
+          Statistics==&quot;Rate per 100,000 population&quot;,
+          GEO==&quot;Canada&quot;,
+          Violations==&quot;Total, all violations&quot;)
+plotdata$`Age of victim` &lt;- factor(plotdata$`Age of victim`,
+                                   levels=c(&quot;Under 12 years&quot;,
+                                            &quot;12 to 17 years&quot;,
+                                            &quot;18 years and over&quot;))
+ggplot(plotdata,
+       aes(Date,VALUE, group=`Sex of victim`, color=`Sex of victim`))+
+  geom_line(size=1.5)+
+  theme_light(12,&quot;Avenir&quot;)+
+  facet_wrap(~ `Age of victim`,nrow=1)+
+  scale_color_manual(name=&quot;&quot;,values=c(&quot;#CC6677&quot;,&quot;#4477AA&quot;))+
+  theme(legend.position = &quot;top&quot;)+
+  labs(x=&quot;&quot;,y=&quot;Rate per 100,000 population&quot;,
+       title=&quot;Victims of police-reported violent crime&quot;,
+       subtitle=&quot;Total, all ages&quot;,
+       caption=&quot;Source: Statistics Canada NDM 35-10-0051\nChart by @bcshaffer&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>There is concerning growth in the rate of violent crimes against teens. For some perspective, let’s see the same data in numbers of victim rather than rate. The bulk of crimes remains in the greater than 18 category, although growth is larger for teens, especially on a per capita basis.
+<img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Now, let’s look at the rate of crime per 100,000 population by each violation type across each province. The list of violation types is:</p>
+<pre class="r"><code>unique(data$Violations)</code></pre>
+<pre><code>## [1] &quot;Total, all violations&quot;                                        
+## [2] &quot;Violations causing death and attempted murder&quot;                
+## [3] &quot;Sexual assaults, levels 1, 2, 3&quot;                              
+## [4] &quot;Sexual violations against children&quot;                           
+## [5] &quot;Assaults&quot;                                                     
+## [6] &quot;Other violent violations&quot;                                     
+## [7] &quot;Criminal Code traffic violations causing death or bodily harm&quot;</code></pre>
+<div id="breakdown-by-province" class="section level2">
+<h2>Breakdown by Province</h2>
+<p>We start by only looking at the provinces, because the territory values blow up the y-axis. I’ll come back to important data in the territories later. We aggregate across all ages, but split the data by sex.</p>
+<pre class="r"><code># Function to plot by sex (all ages) with violation type as input
+# Excludes territories due to much higher rate (y-axis issues)
+plotbysex &lt;- function(v){
+  plotdata &lt;- data %&gt;%
+    filter( Violations==v,
+            `Sex of victim`!=&quot;Total, sex of victim&quot;,
+            `Sex of victim`!=&quot;Sex of victim unknown&quot;,
+            `Age of victim`==&quot;Total, age of victim&quot;,
+            Statistics==&quot;Rate per 100,000 population&quot;,
+            !(GEO %in% c(&quot;Canada&quot;,&quot;Northwest Territories&quot;,&quot;Nunavut&quot;,&quot;Yukon&quot;))
+            )
+  ggplot(plotdata, aes(year,VALUE, group=`Sex of victim`, color=`Sex of victim`))+
+    geom_line(size=1.5)+
+    facet_wrap(~ GEO,nrow=2)+
+    theme_light(12,&quot;Avenir&quot;)+
+    scale_color_manual(name=&quot;&quot;,values=c(&quot;#CC6677&quot;,&quot;#4477AA&quot;))+
+    scale_x_continuous(breaks=c(2010,2016))+
+    theme(legend.position = &quot;top&quot;)+
+    labs(x=&quot;&quot;,y=&quot;Rate per 100,000 population&quot;,
+         title=&quot;Victims of police-reported violent crime&quot;,
+         subtitle=paste0(v,&quot;, all ages&quot;),
+         caption=&quot;Source: Statistics Canada NDM 35-10-0051\nChart by @bcshaffer&quot;)
+}</code></pre>
+<pre class="r"><code>plotbysex(&quot;Total, all violations&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>plotbysex(&quot;Violations causing death and attempted murder&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<pre class="r"><code>plotbysex(&quot;Sexual assaults, levels 1, 2, 3&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
+<pre class="r"><code>plotbysex(&quot;Sexual violations against children&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-7-4.png" width="672" /></p>
+<pre class="r"><code>plotbysex(&quot;Assaults&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-7-5.png" width="672" /></p>
+<pre class="r"><code>plotbysex(&quot;Other violent violations&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-7-6.png" width="672" /></p>
+<pre class="r"><code>plotbysex(&quot;Criminal Code traffic violations causing death or bodily harm&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-7-7.png" width="672" /></p>
+</div>
+<div id="the-territories" class="section level2">
+<h2>The Territories</h2>
+<p>Now, let’s look at the same data, but filtering only on the 3 territories and Canada for reference.</p>
+<pre class="r"><code>plotbysex.t(&quot;Total, all violations&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>plotbysex.t(&quot;Violations causing death and attempted murder&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<pre class="r"><code>plotbysex.t(&quot;Sexual assaults, levels 1, 2, 3&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-9-3.png" width="672" /></p>
+<pre class="r"><code>plotbysex.t(&quot;Sexual violations against children&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-9-4.png" width="672" /></p>
+<pre class="r"><code>plotbysex.t(&quot;Assaults&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-9-5.png" width="672" /></p>
+<pre class="r"><code>plotbysex.t(&quot;Other violent violations&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-9-6.png" width="672" /></p>
+<pre class="r"><code>plotbysex.t(&quot;Criminal Code traffic violations causing death or bodily harm&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-9-7.png" width="672" /></p>
+</div>
+<div id="breakdown-by-age" class="section level2">
+<h2>Breakdown by Age</h2>
+<p>We can look at how the incidence of violent crime breaks down by age. Here we’ll look at the Canada-wide numbers. A massive table (facet_grid) splitting it by age and region is possible, but gets messy quickly. I hide the function code here, but it is similar to the above function, with the exception that faceting is done by age rather than province, and I filter on Canada-wide data only.</p>
+<pre class="r"><code>plotbyage(&quot;Total, all violations&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>plotbyage(&quot;Violations causing death and attempted murder&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
+<pre class="r"><code>plotbyage(&quot;Sexual assaults, levels 1, 2, 3&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-11-3.png" width="672" /></p>
+<pre class="r"><code>plotbyage(&quot;Sexual violations against children&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-11-4.png" width="672" /></p>
+<pre class="r"><code>plotbyage(&quot;Assaults&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-11-5.png" width="672" /></p>
+<pre class="r"><code>plotbyage(&quot;Other violent violations&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-11-6.png" width="672" /></p>
+<pre class="r"><code>plotbyage(&quot;Criminal Code traffic violations causing death or bodily harm&quot;)</code></pre>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-11-7.png" width="672" /></p>
+<hr />
+</div>
+<div id="the-bottom-line" class="section level2">
+<h2>The Bottom Line:</h2>
+<ul>
+<li>The rate of violent crime, notably sexual assaults, remains extremely skewed towards women.</li>
+<li>The rate of violent crime causing death and attempted murder is skewed towards men but remains relatively low.</li>
+<li><strong>The rate of sexual assaults towards young girls is high and alarmingly climbing.</strong></li>
+</ul>
+<p><img src="/post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/sexual_assault_teens-1.png" width="672" /></p>
+</div>

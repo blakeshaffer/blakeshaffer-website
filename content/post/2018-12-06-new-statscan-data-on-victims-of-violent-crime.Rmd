@@ -1,0 +1,282 @@
+---
+title: New Statscan data on victims of violent crime in Canada
+author: Blake Shaffer
+date: '2018-12-06'
+slug: new-statscan-data-on-victims-of-violent-crime
+categories:
+  - social
+tags:
+  - crime
+  - gender
+twitterImg: post/2018-12-06-new-statscan-data-on-victims-of-violent-crime_files/figure-html/unnamed-chunk-11-4.png
+header:
+  caption: ''
+  image: ''
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE, cache=TRUE)
+```
+
+Statistics Canada recently released new data on victims of violent crime across Canada from 2009 to 2017. In this post, I explore trends in this data by region, age and gender.
+
+I find, unsurprisingly, big differences in incidence by gender. The rate of violent crime, notably sexual assaults, remains extremely skewed towards women. The rate of violent crime causing death and attempted murder is skewed towards men but remains relatively low in Canada. **Alarmingly, the rate of sexual assaults towards young girls is high and climbing.** Regional splits also show concerning trends in certain regions.
+
+***
+
+Let's start by pulling in the data which can be found in NDM table 35-10-0051.
+
+```{r}
+library(tidyverse)
+library(cansim)
+library(ggthemes)
+
+data <- get_cansim(35100051) %>% normalize_cansim_values() %>%
+  mutate(year = as.numeric(REF_DATE))
+data$GEO <- factor(data$GEO, levels=c("Canada",
+                                      "British Columbia",
+                                      "Alberta",
+                                      "Saskatchewan",
+                                      "Manitoba",
+                                      "Ontario",
+                                      "Quebec",
+                                      "New Brunswick",
+                                      "Prince Edward Island",
+                                      "Nova Scotia",
+                                      "Newfoundland and Labrador",
+                                      "Yukon",
+                                      "Northwest Territories",
+                                      "Nunavut"))
+```
+
+To start, let's look at Canada-wide total violations, by gender:
+```{r}
+plotdata <- data %>%
+  filter( `Sex of victim`!="Total, sex of victim",
+          `Sex of victim`!="Sex of victim unknown",
+          `Age of victim`=="Total, age of victim",
+          Statistics=="Rate per 100,000 population",
+          GEO=="Canada",
+          Violations=="Total, all violations")
+ggplot(plotdata,
+       aes(Date,VALUE, group=`Sex of victim`, color=`Sex of victim`))+
+  geom_line(size=1.5)+
+  theme_light(12,"Avenir")+
+  scale_color_manual(name="",values=c("#CC6677","#4477AA"))+
+  theme(legend.position = "top")+
+  labs(x="",y="Rate per 100,000 population",
+       title="Victims of police-reported violent crime",
+       subtitle="Total, all ages",
+       caption="Source: Statistics Canada NDM 35-10-0051\nChart by @bcshaffer")
+```
+
+We can dig a little deeper and see how this breaks down by age group:
+```{r}
+# by age
+plotdata <- data %>%
+  filter( `Sex of victim`!="Total, sex of victim",
+          `Sex of victim`!="Sex of victim unknown",
+          `Age of victim` %in% c("Under 12 years",
+                                 "12 to 17 years",
+                                 "18 years and over"),
+          Statistics=="Rate per 100,000 population",
+          GEO=="Canada",
+          Violations=="Total, all violations")
+plotdata$`Age of victim` <- factor(plotdata$`Age of victim`,
+                                   levels=c("Under 12 years",
+                                            "12 to 17 years",
+                                            "18 years and over"))
+ggplot(plotdata,
+       aes(Date,VALUE, group=`Sex of victim`, color=`Sex of victim`))+
+  geom_line(size=1.5)+
+  theme_light(12,"Avenir")+
+  facet_wrap(~ `Age of victim`,nrow=1)+
+  scale_color_manual(name="",values=c("#CC6677","#4477AA"))+
+  theme(legend.position = "top")+
+  labs(x="",y="Rate per 100,000 population",
+       title="Victims of police-reported violent crime",
+       subtitle="Total, all ages",
+       caption="Source: Statistics Canada NDM 35-10-0051\nChart by @bcshaffer")
+```
+
+There is concerning growth in the rate of violent crimes against teens. For some perspective, let's see the same data in numbers of victim rather than rate. The bulk of crimes remains in the greater than 18 category, although growth is larger for teens, especially on a per capita basis.
+```{r, echo=FALSE}
+# by age, by number
+plotdata <- data %>%
+  filter( `Sex of victim`!="Total, sex of victim",
+          `Sex of victim`!="Sex of victim unknown",
+          `Age of victim` %in% c("Under 12 years",
+                                 "12 to 17 years",
+                                 "18 years and over"),
+          Statistics=="Number of victims",
+          GEO=="Canada",
+          Violations=="Total, all violations")
+plotdata$`Age of victim` <- factor(plotdata$`Age of victim`,
+                                   levels=c("Under 12 years",
+                                            "12 to 17 years",
+                                            "18 years and over"))
+ggplot(plotdata,
+       aes(Date,VALUE, group=`Sex of victim`, color=`Sex of victim`))+
+  geom_line(size=1.5)+
+  theme_light(12,"Avenir")+
+  facet_wrap(~ `Age of victim`,nrow=1)+
+  scale_color_manual(name="",values=c("#CC6677","#4477AA"))+
+  theme(legend.position = "top")+
+  labs(x="",y="Number of victims (annual)",
+       title="Victims of police-reported violent crime",
+       subtitle="Total, all ages",
+       caption="Source: Statistics Canada NDM 35-10-0051\nChart by @bcshaffer")
+```
+
+
+Now, let's look at the rate of crime per 100,000 population by each violation type across each province. The list of violation types is:
+
+```{r}
+unique(data$Violations)
+```
+
+## Breakdown by Province
+
+We start by only looking at the provinces, because the territory values blow up the y-axis. I'll come back to important data in the territories later. We aggregate across all ages, but split the data by sex.
+```{r}
+# Function to plot by sex (all ages) with violation type as input
+# Excludes territories due to much higher rate (y-axis issues)
+plotbysex <- function(v){
+  plotdata <- data %>%
+    filter( Violations==v,
+            `Sex of victim`!="Total, sex of victim",
+            `Sex of victim`!="Sex of victim unknown",
+            `Age of victim`=="Total, age of victim",
+            Statistics=="Rate per 100,000 population",
+            !(GEO %in% c("Canada","Northwest Territories","Nunavut","Yukon"))
+            )
+  ggplot(plotdata, aes(year,VALUE, group=`Sex of victim`, color=`Sex of victim`))+
+    geom_line(size=1.5)+
+    facet_wrap(~ GEO,nrow=2)+
+    theme_light(12,"Avenir")+
+    scale_color_manual(name="",values=c("#CC6677","#4477AA"))+
+    scale_x_continuous(breaks=c(2010,2016))+
+    theme(legend.position = "top")+
+    labs(x="",y="Rate per 100,000 population",
+         title="Victims of police-reported violent crime",
+         subtitle=paste0(v,", all ages"),
+         caption="Source: Statistics Canada NDM 35-10-0051\nChart by @bcshaffer")
+}
+```
+
+```{r}
+plotbysex("Total, all violations")
+plotbysex("Violations causing death and attempted murder")
+plotbysex("Sexual assaults, levels 1, 2, 3")
+plotbysex("Sexual violations against children")
+plotbysex("Assaults")
+plotbysex("Other violent violations")
+plotbysex("Criminal Code traffic violations causing death or bodily harm")
+```
+
+## The Territories
+
+Now, let's look at the same data, but filtering only on the 3 territories and Canada for reference.
+
+```{r, echo=FALSE}
+# Function to plot by sex (all ages) with violation type as input
+# Only territories and Canada as reference
+plotbysex.t <- function(v){
+  plotdata <- data %>%
+    filter( Violations==v,
+            `Sex of victim`!="Total, sex of victim",
+            `Sex of victim`!="Sex of victim unknown",
+            `Age of victim`=="Total, age of victim",
+            Statistics=="Rate per 100,000 population",
+            GEO %in% c("Canada","Northwest Territories","Nunavut","Yukon")
+            )
+  ggplot(plotdata,
+         aes(Date,VALUE, group=`Sex of victim`, color=`Sex of victim`))+
+    geom_line(size=1.5)+
+    facet_wrap(~ GEO,nrow=1)+
+    theme_light(12,"Avenir")+
+    scale_color_manual(name="",values=c("#CC6677","#4477AA"))+
+    theme(legend.position = "top")+
+    labs(x="",y="Rate per 100,000 population",
+         title="Victims of police-reported violent crime",
+         subtitle=paste0(v,", all ages"),
+         caption="Source: Statistics Canada NDM 35-10-0051\nChart by @bcshaffer")
+}
+```
+
+```{r}
+plotbysex.t("Total, all violations")
+plotbysex.t("Violations causing death and attempted murder")
+plotbysex.t("Sexual assaults, levels 1, 2, 3")
+plotbysex.t("Sexual violations against children")
+plotbysex.t("Assaults")
+plotbysex.t("Other violent violations")
+plotbysex.t("Criminal Code traffic violations causing death or bodily harm")
+```
+
+## Breakdown by Age
+
+We can look at how the incidence of violent crime breaks down by age. Here we'll look at the Canada-wide numbers. A massive table (facet_grid) splitting it by age and region is possible, but gets messy quickly. I hide the function code here, but it is similar to the above function, with the exception that faceting is done by age rather than province, and I filter on Canada-wide data only.
+
+```{r, echo=FALSE}
+# plot by age, all Canada
+plotbyage <- function(v){
+  plotdata <- data %>%
+    filter( Violations==v,
+            `Sex of victim`!="Total, sex of victim",
+            `Sex of victim`!="Sex of victim unknown",
+            `Age of victim` %in% c("Under 12 years","12 to 17 years","18 years and over"),
+            Statistics=="Rate per 100,000 population",
+            GEO=="Canada")
+  plotdata$`Age of victim` <- factor(plotdata$`Age of victim`,
+                                     levels=c("Under 12 years","12 to 17 years","18 years and over"))
+  ggplot(plotdata, aes(Date,VALUE, group=`Sex of victim`, color=`Sex of victim`))+
+    geom_line(size=1.5)+
+    facet_wrap(~ `Age of victim`,nrow=1)+
+    theme_light(12,"Avenir")+
+    scale_color_manual(name="",values=c("#CC6677","#4477AA"))+
+    theme(legend.position = "top")+
+    labs(x="",y="Rate per 100,000 population",
+         title="Victims of police-reported violent crime (Canada)",
+         subtitle=paste0(v),
+         caption="Source: Statistics Canada NDM 35-10-0051\nChart by @bcshaffer")
+}
+```
+
+```{r}
+plotbyage("Total, all violations")
+plotbyage("Violations causing death and attempted murder")
+plotbyage("Sexual assaults, levels 1, 2, 3")
+plotbyage("Sexual violations against children")
+plotbyage("Assaults")
+plotbyage("Other violent violations")
+plotbyage("Criminal Code traffic violations causing death or bodily harm")
+```
+
+***
+
+## The Bottom Line:
+
+* The rate of violent crime, notably sexual assaults, remains extremely skewed towards women.
+* The rate of violent crime causing death and attempted murder is skewed towards men but remains relatively low.
+* **The rate of sexual assaults towards young girls is high and alarmingly climbing.**
+
+```{r sexual_assault_teens, echo=FALSE}
+plotdata <- data %>%
+    filter( Violations=="Sexual violations against children",
+            `Sex of victim`!="Total, sex of victim",
+            `Sex of victim`!="Sex of victim unknown",
+            `Age of victim`=="12 to 17 years",
+            Statistics=="Rate per 100,000 population",
+            GEO=="Canada")
+ggplot(plotdata,
+       aes(year,VALUE, group=`Sex of victim`, color=`Sex of victim`))+
+    geom_line(size=1.5)+
+    theme_light(12,"Avenir")+
+    scale_color_manual(name="",values=c("#CC6677","#4477AA"))+
+    scale_x_continuous(breaks=c(2010,2016))+
+    theme(legend.position = "top")+
+    labs(x="",y="Rate per 100,000 population",
+         title="Sexual assault against 12 to 17 year olds in Canada",
+         caption="Source: Statistics Canada NDM 35-10-0051\nChart by @bcshaffer")
+```
+

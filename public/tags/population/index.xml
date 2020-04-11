@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>population | Blake Shaffer</title>
+    <link>/tags/population/</link>
+      <atom:link href="/tags/population/index.xml" rel="self" type="application/rss+xml" />
+    <description>population</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© `2020`</copyright><lastBuildDate>Mon, 28 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/Blake-9943_small.jpg</url>
+      <title>population</title>
+      <link>/tags/population/</link>
+    </image>
+    
+    <item>
+      <title>Canada’s aging population</title>
+      <link>/post/canada-s-aging-population/</link>
+      <pubDate>Mon, 28 Jan 2019 00:00:00 +0000</pubDate>
+      <guid>/post/canada-s-aging-population/</guid>
+      <description>
+
+
+&lt;p&gt;Recently released data from Statistics Canada allows us to explore demographic trends in the age make-up of the Canadian population. The trend is clear: Canada is getting old.&lt;/p&gt;
+&lt;p&gt;In this chart-blog, we will take a look at population by age group – both across regions and over time – and how median age has evolved. (Spoiler: It’s risen. A lot!)&lt;/p&gt;
+&lt;p&gt;You can find the chart-blog &lt;a href=&#34;/post/compiled/Population-pyramids.html&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,76 @@
+---
+title: Trucks! Trucks! Trucks!
+author: Blake Shaffer
+date: '2018-12-17'
+slug: trucks-trucks-trucks
+categories: []
+tags: []
+header:
+  caption: ''
+  image: ''
+twitterImg: post/2018-12-17-trucks-trucks-trucks_files/figure-html/truckplot-1.png
+---
+
+
+
+<p>Quick post to show how easy it is to do quick data exploration using R. This post walks us through making a (nice!) chart of <strong>new vehicle sales in Canada</strong>, breaking it down by vehicle type and region.</p>
+<div id="step-1-load-the-three-packages-we-will-use-for-this-plot" class="section level2">
+<h2>Step 1: Load the three packages we will use for this plot:</h2>
+<ul>
+<li><code>tidyverse</code> : because always tidyverse</li>
+<li><code>cansim</code> : great package to easily extract Statistics Canada data</li>
+<li><code>ggthemes</code> : not necessary, but a quick way to pretty up your ggplot</li>
+</ul>
+<pre class="r"><code>library(tidyverse)
+library(cansim)
+library(ggthemes)</code></pre>
+</div>
+<div id="step-2-data-wranglin" class="section level2">
+<h2>Step 2: Data wranglin’</h2>
+<ol style="list-style-type: decimal">
+<li>Pull in the data</li>
+<li>Filter to what we want in the data</li>
+<li>Fiddle with some labels</li>
+</ol>
+<pre class="r"><code>data &lt;- get_cansim(20100001) %&gt;% normalize_cansim_values()
+
+plotdata &lt;- data %&gt;%
+  filter(GEO!=&quot;Canada&quot;,
+         Sales==&quot;Units&quot;,
+         `Vehicle type` %in% c(&quot;Passenger cars&quot;,&quot;Trucks&quot;),
+         `Origin of manufacture`==&quot;Total, country of manufacture&quot;)
+
+# Change some GEO labels to shorten them
+plotdata$GEO[plotdata$GEO==&quot;Newfoundland and Labrador&quot;] &lt;- &quot;Nfld &amp; Lab.&quot;
+plotdata$GEO[plotdata$GEO==&quot;British Columbia and the Territories&quot;] &lt;- &quot;BC &amp; Terr.&quot;
+plotdata$GEO[plotdata$GEO==&quot;Prince Edward Island&quot;] &lt;- &quot;PEI&quot;
+plotdata$GEO &lt;- factor(plotdata$GEO, levels=c(&quot;BC &amp; Terr.&quot;,&quot;Alberta&quot;,&quot;Saskatchewan&quot;,&quot;Manitoba&quot;,&quot;Ontario&quot;,&quot;Quebec&quot;,&quot;New Brunswick&quot;,&quot;PEI&quot;,&quot;Nova Scotia&quot;,&quot;Nfld &amp; Lab.&quot;))
+
+# Change &quot;passenger cars&quot; to &quot;cars&quot; for plot label
+plotdata$`Vehicle type`[plotdata$`Vehicle type`==&quot;Passenger cars&quot;] &lt;- &quot;Cars&quot;</code></pre>
+</div>
+<div id="step-3-plot-it" class="section level2">
+<h2>Step 3: Plot it!</h2>
+<pre class="r"><code>ggplot(plotdata, aes(Date,VALUE,color=`Vehicle type`))+
+  geom_point(size=.1,alpha=.2)+
+  geom_smooth(se=F)+
+  facet_wrap(~GEO, scales=&quot;free_y&quot;, nrow=2)+
+  scale_color_ptol(name=&quot;&quot;)+  # nice color scheme from ggthemes package
+  scale_x_date(limits=c(as.Date(&quot;1980-01-01&quot;),as.Date(&quot;2020-01-01&quot;)),
+               breaks = c(as.Date(&quot;1980-01-01&quot;),as.Date(&quot;2000-01-01&quot;),as.Date(&quot;2020-01-01&quot;)),
+               date_labels = &quot;%Y&quot;)+
+  theme_tufte(12,&quot;Shree Devanagari 714&quot;)+     # font similar to &#39;Avenir&#39;
+  theme(legend.position = &quot;top&quot;,
+        title=element_text(face=&quot;bold&quot;),
+        plot.caption = element_text(face=&quot;italic&quot;),
+        legend.text = element_text(size=14))+
+  labs(x=&quot;&quot;, y=&quot;&quot;,
+       subtitle=&quot;New vehicle sales (monthly)&quot;,
+       title=&quot;Trucks! Trucks! Trucks!&quot;,
+       caption=&quot;Fitted line through monthly (seasonally unadjusted) data.\nSource: Statscan NDM Table 20-10-0001.&quot;)</code></pre>
+<p><img src="/post/2018-12-17-trucks-trucks-trucks_files/figure-html/truckplot-1.png" width="864" /></p>
+<hr />
+<p>There you go. A nice quick plot showing a pretty stark shift in consumer preferences towards trucks across <em>all regions</em> in Canada. An interesting extension of this data exploration would be to see what this means in terms of fleet-wide fuel economy. Are people switching from Civics to F-150s? Or Crown Vics to Subaru Crosstreks? The latter would mean a shift from cars to “trucks” is improving overall gas mileage… More data needed!</p>
+<p><em>Happy Charting!</em></p>
+<p><em>-Blake</em></p>
+</div>

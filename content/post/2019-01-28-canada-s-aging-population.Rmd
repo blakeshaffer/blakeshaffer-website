@@ -1,0 +1,24 @@
+---
+title: Canada’s aging population
+author: Blake Shaffer
+date: '2019-01-28'
+slug: canada-s-aging-population
+twitterImg: post/compiled/Population-pyramids_files/figure-html/unnamed-chunk-2-1.png
+categories:
+  - population
+  - social
+tags:
+  - population
+header:
+  caption: ''
+  image: ''
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE, cache=TRUE)
+```
+
+Recently released data from Statistics Canada allows us to explore demographic trends in the age make-up of the Canadian population. The trend is clear: Canada is getting old.
+
+In this chart-blog, we will take a look at population by age group -- both across regions and over time -- and how median age has evolved. (Spoiler: It's risen. A lot!)
+
+You can find the chart-blog [here](/post/compiled/Population-pyramids.html)

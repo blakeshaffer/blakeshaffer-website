@@ -1,0 +1,85 @@
+---
+title: Trucks! Trucks! Trucks!
+author: Blake Shaffer
+date: '2018-12-17'
+slug: trucks-trucks-trucks
+categories: []
+tags: []
+header:
+  caption: ''
+  image: ''
+twitterImg: post/2018-12-17-trucks-trucks-trucks_files/figure-html/truckplot-1.png
+---
+Quick post to show how easy it is to do quick data exploration using R. This post walks us through making a (nice!) chart of **new vehicle sales in Canada**, breaking it down by vehicle type and region.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE, cache=TRUE)
+```
+
+## Step 1: Load the three packages we will use for this plot:
+
+* `tidyverse` : because always tidyverse
+* `cansim` : great package to easily extract Statistics Canada data
+* `ggthemes` : not necessary, but a quick way to pretty up your ggplot
+
+
+```{r}
+library(tidyverse)
+library(cansim)
+library(ggthemes)
+```
+
+## Step 2: Data wranglin'
+
+1. Pull in the data
+2. Filter to what we want in the data
+3. Fiddle with some labels
+
+```{r}
+data <- get_cansim(20100001) %>% normalize_cansim_values()
+
+plotdata <- data %>%
+  filter(GEO!="Canada",
+         Sales=="Units",
+         `Vehicle type` %in% c("Passenger cars","Trucks"),
+         `Origin of manufacture`=="Total, country of manufacture")
+
+# Change some GEO labels to shorten them
+plotdata$GEO[plotdata$GEO=="Newfoundland and Labrador"] <- "Nfld & Lab."
+plotdata$GEO[plotdata$GEO=="British Columbia and the Territories"] <- "BC & Terr."
+plotdata$GEO[plotdata$GEO=="Prince Edward Island"] <- "PEI"
+plotdata$GEO <- factor(plotdata$GEO, levels=c("BC & Terr.","Alberta","Saskatchewan","Manitoba","Ontario","Quebec","New Brunswick","PEI","Nova Scotia","Nfld & Lab."))
+
+# Change "passenger cars" to "cars" for plot label
+plotdata$`Vehicle type`[plotdata$`Vehicle type`=="Passenger cars"] <- "Cars"
+```
+
+## Step 3: Plot it!
+
+```{r truckplot, fig.width=9, fig.height=5}
+ggplot(plotdata, aes(Date,VALUE,color=`Vehicle type`))+
+  geom_point(size=.1,alpha=.2)+
+  geom_smooth(se=F)+
+  facet_wrap(~GEO, scales="free_y", nrow=2)+
+  scale_color_ptol(name="")+  # nice color scheme from ggthemes package
+  scale_x_date(limits=c(as.Date("1980-01-01"),as.Date("2020-01-01")),
+               breaks = c(as.Date("1980-01-01"),as.Date("2000-01-01"),as.Date("2020-01-01")),
+               date_labels = "%Y")+
+  theme_tufte(12,"Shree Devanagari 714")+     # font similar to 'Avenir'
+  theme(legend.position = "top",
+        title=element_text(face="bold"),
+        plot.caption = element_text(face="italic"),
+        legend.text = element_text(size=14))+
+  labs(x="", y="",
+       subtitle="New vehicle sales (monthly)",
+       title="Trucks! Trucks! Trucks!",
+       caption="Fitted line through monthly (seasonally unadjusted) data.\nSource: Statscan NDM Table 20-10-0001.")
+```
+
+***
+
+There you go. A nice quick plot showing a pretty stark shift in consumer preferences towards trucks across *all regions* in Canada. An interesting extension of this data exploration would be to see what this means in terms of fleet-wide fuel economy. Are people switching from Civics to F-150s? Or Crown Vics to Subaru Crosstreks? The latter would mean a shift from cars to "trucks" is improving overall gas mileage... More data needed!
+
+*Happy Charting!*
+
+*-Blake*

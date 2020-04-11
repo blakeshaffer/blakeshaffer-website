@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Michal Moore | Blake Shaffer</title>
+    <link>/authors/michal-moore/</link>
+      <atom:link href="/authors/michal-moore/index.xml" rel="self" type="application/rss+xml" />
+    <description>Michal Moore</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© `2020`</copyright><lastBuildDate>Thu, 01 Sep 2016 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/Blake-9943_small.jpg</url>
+      <title>Michal Moore</title>
+      <link>/authors/michal-moore/</link>
+    </image>
+    
+    <item>
+      <title>The Challenge of Integrating Renewable Generation in the Alberta Electricity Market</title>
+      <link>/publication/spp_electricityroundtable_summarypaper_2016/</link>
+      <pubDate>Thu, 01 Sep 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/spp_electricityroundtable_summarypaper_2016/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

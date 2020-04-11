@@ -1,0 +1,26 @@
+---
+title: Blogging Charts!
+author: Blake Shaffer
+date: '2018-11-29'
+slug: charts
+categories: []
+tags: []
+header:
+  caption: ''
+  image: ''
+---
+
+I like to make charts.
+
+I often post them on Twitter (@bcshaffer). I thought I might start posting some of them on my website as a way for me to (a) learn to use R Markdown and (b) share some of my R code that creates these charts for others who are interested in learning.
+
+Note: Both my R code and especially my nascent R Markdown skills are still rough. I'm sure much of it isn't "best practice". Far from it. It's what I like to call 'gets it done' code. So learn what you can, and apologies for creating bad habits!
+
+*- Blake*
+
+
+**Resources:**
+
+I learned R primarily from Hadley Wickham and Garrett Grolemund's book: [R for Data Science](https://r4ds.had.co.nz/). I highly recommend it. It assumes zero previous R knowledge, even guiding you through where to download the required software, and gets you up and running in no time. 
+
+For data visualization tips, I really like Claus Wilke's online book: [Fundamentals of Data Visualization](https://serialmentor.com/dataviz/) (with code examples!).

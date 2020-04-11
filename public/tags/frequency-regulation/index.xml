@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>frequency regulation | Blake Shaffer</title>
+    <link>/tags/frequency-regulation/</link>
+      <atom:link href="/tags/frequency-regulation/index.xml" rel="self" type="application/rss+xml" />
+    <description>frequency regulation</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© `2020`</copyright><lastBuildDate>Wed, 01 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/Blake-9943_small.jpg</url>
+      <title>frequency regulation</title>
+      <link>/tags/frequency-regulation/</link>
+    </image>
+    
+    <item>
+      <title>Paying for performance: The role of policy in energy storage deployment</title>
+      <link>/publication/shaffertabariwp2020/</link>
+      <pubDate>Wed, 01 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>/publication/shaffertabariwp2020/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

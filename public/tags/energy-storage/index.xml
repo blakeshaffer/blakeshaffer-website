@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>energy storage | Blake Shaffer</title>
+    <link>/tags/energy-storage/</link>
+      <atom:link href="/tags/energy-storage/index.xml" rel="self" type="application/rss+xml" />
+    <description>energy storage</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© `2020`</copyright><lastBuildDate>Wed, 01 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/Blake-9943_small.jpg</url>
+      <title>energy storage</title>
+      <link>/tags/energy-storage/</link>
+    </image>
+    
+    <item>
+      <title>Paying for performance: The role of policy in energy storage deployment</title>
+      <link>/publication/shaffertabariwp2020/</link>
+      <pubDate>Wed, 01 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>/publication/shaffertabariwp2020/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>The Role of Storage in Alberta’s Electricity Market: Summary of a School of Public Policy Roundtable Event</title>
+      <link>/publication/spp_electricityroundtable_summarypaper_2019/</link>
+      <pubDate>Sun, 01 Sep 2019 00:00:00 +0000</pubDate>
+      <guid>/publication/spp_electricityroundtable_summarypaper_2019/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

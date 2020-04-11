@@ -1,0 +1,159 @@
+---
+title: Social assistance and unemployment duration in Alberta
+author: Blake Shaffer
+date: '2018-11-30'
+slug: caseload-duration
+categories:
+  - social
+tags:
+  - unemployment
+  - social assistance
+twitterImg: post/2018-11-29-caseload-duration_files/figure-html/unnamed-chunk-5-1.png
+header:
+  caption: ''
+  image: ''
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, cache=TRUE)
+```
+
+In this post, I consider the relationship between **Social Assistance Caseloads** and **Unemployment Duration** in Alberta.
+
+Let's start by calling the necessary libraries
+```{r}
+library(tidyverse)
+library(zoo)
+library(cansim) #Big thanks to Jens von Bergmann and Dmitry Shkolnik for this package!
+```
+
+## First, get CASELOAD data from open.alberta.ca
+```{r, fig.width=4,fig.height=4}
+data.caseload <-read.csv("https://open.alberta.ca/dataset/e1ec585f-3f52-40f2-a022-5a38ea3397e5/resource/4f97a3ae-1b3a-48e9-a96f-f65c58526e07/download/GOAIncomeSupportCSVv61.02017-05-15.csv")
+data.caseload <- data.caseload %>%
+  mutate(Date = as.Date(as.yearmon(Ref_Date,"%b-%y"))) %>%
+  filter(Geography=="Alberta") %>%
+  dplyr::select("Caseloads"=Value,Date,Measure)
+
+data.caseload.total <- data.caseload %>%
+  filter(Measure=="Total Caseload") %>%
+  dplyr::select(Caseloads,Date)
+
+ggplot(data.caseload.total, aes(Date,Caseloads))+geom_line() #check data
+```
+
+## Second, get DURATION data from Statistics Canada
+```{r, fig.width=4,fig.height=4}
+data.duration <- get_cansim(2820047) %>% normalize_cansim_values()
+data.duration <- data.duration %>%
+  filter(GEO=="Alberta",
+         `Duration of unemployment`=="Average weeks unemployed, no top-code",
+         Sex=="Both sexes",
+         `Age group`=="15 years and over",
+         Date>="2005-04-01") %>%
+  dplyr::select("Duration"=VALUE,Date)
+ggplot(data.duration, aes(Date,Duration))+geom_line() #check data
+```
+
+## Now, gather into long format and do a quick plot
+```{r, fig.width=10,fig.height=5}
+plotdata <- merge(data.duration, data.caseload.total, by="Date")
+plotdata <- gather(plotdata,key,value,2:3)
+ggplot(plotdata, aes(Date,value))+
+  geom_line()+
+  facet_wrap(~key,scales="free_y")
+```
+
+## Now, do a pretty plot with scatter points and smoothes
+```{r, fig.width=10,fig.height=5}
+plotdata$key[plotdata$key=="Caseloads"] <- "Caseloads (people)"
+plotdata$key[plotdata$key=="Duration"] <- "Duration (weeks)"
+
+ggplot(plotdata, aes(Date,value))+
+  geom_point(alpha=.5)+
+  geom_smooth(span=.3)+
+  facet_wrap(~key,scales="free_y")+
+  theme_light(12,"Avenir")+
+  theme(plot.caption = element_text(size=8),
+        strip.text = element_text(size=12),
+        panel.spacing = unit(1,"cm"))+
+  labs(x="",
+       y="",
+       title="Similar trends between caseloads and unemployment duration",
+       caption="Caseload data through Sep-18; Duration data through Oct-18
+       Sources: https://open.alberta.ca/dataset/income-support-caseload-alberta and CANSIM 282-0047
+       Chart by Blake Shaffer (@bcshaffer)")
+```
+  
+## We can also dig deeper into the caseload data
+
+First, let's look at caseload recipients by family types
+```{r,fig.width=10,fig.height=3}
+# first filter on the family type categories
+data.caseload.family <- data.caseload %>%
+  filter(Measure %in% c("Single Individuals Total","Lone-parent Families Total","Couples with Children Total","Couples without Children Total"))
+
+# clean up the category names, not necessary
+library(tm)
+data.caseload.family$Measure <- as.character(data.caseload.family$Measure)
+data.caseload.family$Measure <- removeWords(data.caseload.family$Measure,"Total")
+  
+# now plot it!
+ggplot(data.caseload.family, aes(Date,Caseloads))+
+  geom_line(size=1.5,color="firebrick")+
+  facet_wrap(~Measure,nrow=1)+
+  scale_y_continuous(expand=c(0,0),limits=c(0,45000))+
+  theme_light(12,"Avenir")+
+  theme(plot.caption = element_text(size=8),
+        strip.text = element_text(size=12),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank())+
+  labs(x="",
+       y="",
+       title="Alberta social assistance caseloads by recipient's family type",
+       caption="Caseload data through Sep-18
+       Source: https://open.alberta.ca/dataset/income-support-caseload-alberta
+       Chart by Blake Shaffer (@bcshaffer)")
+```
+
+Now let's look at the caseload data in terms of type of worker
+```{r,fig.width=10,fig.height=3}
+data.caseload.worker <- data.caseload %>%
+  filter(Measure %in% c("ETW - Working Total",
+                        "ETW - Not Working (Available for Work) Total",
+                        "ETW - Not Working (Unavailable for Work) Total",
+                        "BFE - Total"))
+
+# clean up the category names
+data.caseload.worker <- data.caseload.worker %>%
+  mutate(Measure=fct_recode(Measure,
+                            "Working" = "ETW - Working Total",
+                            "Available for Work" = "ETW - Not Working (Available for Work) Total",
+                            "Unavailable for Work" = "ETW - Not Working (Unavailable for Work) Total",
+                            "Barriers to FT employment" = "BFE - Total"))
+
+# now plot it!
+ggplot(data.caseload.worker, aes(Date,Caseloads))+
+  geom_line(size=1.5,color="royalblue")+
+  facet_wrap(~Measure,nrow=1)+
+  scale_y_continuous(expand=c(0,0),limits=c(0,45000))+
+  theme_light(12,"Avenir")+
+  theme(plot.caption = element_text(size=8),
+        strip.text = element_text(size=12),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank())+
+  labs(x="",
+       y="",
+       title="Alberta social assistance caseloads by recipient's worker type",
+       caption="Caseload data through Sep-18
+       Source: https://open.alberta.ca/dataset/income-support-caseload-alberta
+       Chart by Blake Shaffer (@bcshaffer)")
+```
+
+## Bottom line:
+
+**The bulk of the growth in caseloads has been *Single Individuals* that are *Available for Work*. This also coincides with a large growth in *Unemployment Duration*. This suggests workers that are seeing their unemployment benefits expire may be turning to other forms of social assistance. More details on income support recipients would help policy makers respond effectively.**
+
+h/t to @ronkneebone for raising attention to this important data.

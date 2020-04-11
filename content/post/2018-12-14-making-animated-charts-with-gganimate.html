@@ -1,0 +1,202 @@
+---
+title: "Making animated charts with gganimate"
+author: "Blake Shaffer"
+date: '2018-12-14'
+header:
+  caption: ''
+  image: ''
+slug: making-animated-charts-with-gganimate
+tags: []
+categories: []
+twitterImg: post/2018-12-14-making-animated-charts-with-gganimate_files/gdp_static.png
+---
+
+
+
+<p>What’s better than making charts? Making them animated, of course! While animation isn’t always (ok, rarely) necessary, it can help tell a story static charts can’t.</p>
+<p>Recently there has been a lot of discussion in Canada related to <em>equalization</em>. This is a federal program to transfer funds to provinces with below average fiscal capacity. What is “fiscal capacity”? Others can tell you a <a href="https://ideas.repec.org/p/clg/wpaper/2018-13.html"><strong>lot</strong></a> more about it, but for simplicity, we can think of it like GDP.</p>
+<p>So I wanted to take a look at GDP per capita, by province, going back several years. A little learning, a lot of online digging, and I was able to create this nice chart:</p>
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="en" dir="ltr">
+I made a chart. <a href="https://twitter.com/hashtag/cdnecon?src=hash&amp;ref_src=twsrc%5Etfw">#cdnecon</a> <a href="https://twitter.com/hashtag/cdnpoli?src=hash&amp;ref_src=twsrc%5Etfw">#cdnpoli</a> <a href="https://t.co/Ks8o5E4qir">pic.twitter.com/Ks8o5E4qir</a>
+</p>
+— Blake Shaffer 📊 (<span class="citation">@bcshaffer</span>) <a href="https://twitter.com/bcshaffer/status/1073340073184296960?ref_src=twsrc%5Etfw">December 13, 2018</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>People seemed to like it and some wanted to know more about how it was made. This post explains how to make an animated chart like the tweeted one above using <code>gganimate</code>.</p>
+<p>##Let’s go!</p>
+<p>To begin, let’s load our usual packages, but add in the latest version of <code>gganimate</code> from David Robinson which has been updated by Thomas Lin Pedersen. Thomas has added some new syntax which allows for <em>really nice transitions</em> to the animation.</p>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+library(ggthemes)
+library(ggrepel)
+
+# Package to pull in cansim data, courtesy of Jens von Bergman and Dmitry Shkolnik
+library(cansim) 
+
+# Now update to the newest gganimate version
+#install.packages(&quot;devtools&quot;)
+#devtools::install_github(&#39;thomasp85/gganimate&#39;)
+library(gganimate)</code></pre>
+<p>With packages loaded, it’s time to wrangle the data. I could probably do this cleaner, but meh - it works! I wrote a function below to change the full province names to their 2 character abbreviations that we will use in the plots.</p>
+<p>##Let’s start by pulling in annual GDP data by province and to test it’s working do a quick plot.</p>
+<pre class="r"><code>provlist &lt;- c(&quot;British Columbia&quot;,&quot;Alberta&quot;,&quot;Saskatchewan&quot;,&quot;Manitoba&quot;,&quot;Ontario&quot;,&quot;Quebec&quot;,&quot;New Brunswick&quot;,&quot;Nova Scotia&quot;,&quot;Prince Edward Island&quot;,&quot;Newfoundland and Labrador&quot;)
+
+short_provs &lt;- function(df){
+  df &lt;- df %&gt;%
+    filter(GEO %in% c(&quot;British Columbia&quot;,&quot;Alberta&quot;,&quot;Saskatchewan&quot;,&quot;Manitoba&quot;,&quot;Ontario&quot;,&quot;Quebec&quot;,&quot;New Brunswick&quot;,&quot;Nova Scotia&quot;,&quot;Prince Edward Island&quot;,&quot;Newfoundland and Labrador&quot;))
+  df &lt;- df %&gt;%
+    mutate(GEO.short = case_when(
+      GEO==&quot;British Columbia&quot; ~ &quot;BC&quot;,
+      GEO==&quot;Alberta&quot; ~ &quot;AB&quot;,
+      GEO==&quot;Saskatchewan&quot; ~ &quot;SK&quot;,
+      GEO==&quot;Manitoba&quot; ~ &quot;MB&quot;,
+      GEO==&quot;Ontario&quot; ~ &quot;ON&quot;,
+      GEO==&quot;Quebec&quot; ~ &quot;QC&quot;,
+      GEO==&quot;New Brunswick&quot; ~ &quot;NB&quot;,
+      GEO==&quot;Prince Edward Island&quot; ~ &quot;PE&quot;,
+      GEO==&quot;Nova Scotia&quot; ~ &quot;NS&quot;,
+      GEO==&quot;Newfoundland and Labrador&quot; ~ &quot;NL&quot;
+    ))
+  df$GEO.short &lt;- factor(df$GEO.short, levels=c(&quot;BC&quot;,&quot;AB&quot;,&quot;SK&quot;,&quot;MB&quot;,&quot;ON&quot;,&quot;QC&quot;,&quot;NB&quot;,&quot;PE&quot;,&quot;NS&quot;,&quot;NL&quot;))
+}
+
+GDP &lt;- get_cansim(36100222) %&gt;% normalize_cansim_values()
+df.GDP &lt;- GDP %&gt;%
+  mutate(year=as.integer(REF_DATE)) %&gt;%
+  filter(GEO %in% provlist,
+         Prices==&quot;Chained (2012) dollars&quot;,
+         Estimates==&quot;Gross domestic product at market prices&quot;) %&gt;%
+  dplyr::select(GEO,year,GDP=VALUE)
+df.GDP$GEO.short&lt;-short_provs(df.GDP)
+
+ggplot(df.GDP, aes(GEO.short, GDP/1e9, fill = GEO.short, label=GEO.short)) +
+  geom_col()+
+  geom_text(vjust=-.1)+
+  scale_fill_viridis_d(name=&quot;&quot;)+
+  scale_y_continuous(labels=scales::dollar)+
+  theme_tufte(14,&quot;Avenir&quot;)+
+  theme(legend.position = &quot;none&quot;,
+        axis.text.x = element_blank(),
+        axis.ticks = element_blank())+
+  # Here comes the gganimate specific bits
+  labs(title = &quot;Year: {frame_time}&quot;, x = &quot;&quot;, y = &quot;GDP (2012$ billions&quot;) +
+  transition_time(year) +
+  ease_aes(&#39;linear&#39;)        </code></pre>
+<p><img src="/post/2018-12-14-making-animated-charts-with-gganimate_files/figure-html/GDP-1.gif" /><!-- --></p>
+<p>Ok. Good! We have an animated chart! But it’s not too informative given the BIG and small size of provinces. So to look at per capita GDP we need to pull in annual population data and merge it with our GDP data.</p>
+<pre class="r"><code>pop &lt;- get_cansim(17100005) %&gt;% normalize_cansim_values()
+df.pop &lt;- pop %&gt;%
+  mutate(year=as.integer(REF_DATE)) %&gt;%
+  filter(GEO %in% provlist,
+         Sex==&quot;Both sexes&quot;,
+         `Age group`==&quot;All ages&quot;) %&gt;%
+  dplyr::select(GEO,year,pop=VALUE)
+
+df.GDPpercap &lt;-left_join(df.GDP,df.pop, by=c(&quot;year&quot;,&quot;GEO&quot;)) %&gt;%
+  mutate(GDPpercap=GDP/pop)
+
+df.GDPpercap$GEO.short&lt;-short_provs(df.GDPpercap)</code></pre>
+<p>##Now, let’s create our plot.</p>
+<p>I’m going to use the <code>animate</code> function here so that I can change the speed of the animation a bit, and add a pause at the end.</p>
+<pre class="r"><code>p&lt;-ggplot(df.GDPpercap, aes(GEO.short, GDPpercap, fill=GEO.short, label=GEO.short)) +
+  geom_col()+
+  geom_text(vjust=-.1)+
+  scale_fill_viridis_d(name=&quot;&quot;)+
+  theme_tufte(14,&quot;Avenir&quot;)+
+  theme(legend.position = &quot;none&quot;,
+        axis.text.x = element_blank(),
+        axis.ticks = element_blank())+
+  # Here comes the gganimate specific bits
+  labs(title = &#39;Year: {frame_time}&#39;, x = &#39;&#39;, y = &#39;GDP per capita ($2012)&#39;) +
+  transition_time(year) +
+  ease_aes(&#39;linear&#39;)  
+animate(p, fps=5, end_pause = 30) # Use anim_save(filename) to save the plot</code></pre>
+<p><img src="/post/2018-12-14-making-animated-charts-with-gganimate_files/figure-html/gdppercap-1.gif" /><!-- --></p>
+<p>Not bad. But we can do better! It would be fun to get the provinces to rank themselves every frame. And let’s flip it horizontally too to look like they’re climbing over one another.</p>
+<p>A little digging on stackoverflow took me to this post by Jon Spring: <a href="https://stackoverflow.com/questions/52623722/how-does-gganimate-order-an-ordered-bar-time-series">(https://stackoverflow.com/questions/52623722/how-does-gganimate-order-an-ordered-bar-time-series)</a></p>
+<p>Basically, we add a rank variable, grouping first by year and ordering the provinces. We will use this as our x axis (vertical axis in the flipped coordinates). We will also use <code>geom_tile</code> instead of <code>geom_col</code> because this object creates smoother transitions in the size of the bars.</p>
+<div id="the-tweeted-chart" class="section level2">
+<h2>The tweeted chart!</h2>
+<pre class="r"><code>plotdata &lt;- df.GDPpercap %&gt;%
+  group_by(year) %&gt;%
+  mutate(ordering = rank(GDPpercap)) %&gt;%
+  ungroup() 
+
+p&lt;-ggplot(plotdata,
+       aes(ordering, group = GEO.short,color=GEO.short,fill=GEO.short)) +
+  geom_tile(aes(y = GDPpercap/2, 
+                height = GDPpercap,
+                width = 0.9), alpha = 0.9) +
+  # text on top of bars
+  geom_text(aes(y = GDPpercap, label = GEO.short), hjust = -0.4) +
+  # text in x-axis (requires clip = &quot;off&quot; in coord_cartesian)
+  geom_text(aes(y = 0, label = GEO.short), hjust = 1.4) +
+  coord_flip(clip = &quot;off&quot;, expand = FALSE) +
+  scale_color_viridis_d(name=&quot;&quot;)+
+  scale_fill_viridis_d(name=&quot;&quot;)+
+  scale_y_continuous(labels=scales::dollar)+
+  theme_tufte(14,&quot;Avenir&quot;)+
+  guides(color=F,fill=F)+
+  labs(title=&#39;{frame_time}&#39;, x = &quot;&quot;,y=&quot;GDP per capita ($2012)&quot;) +
+  theme(plot.title = element_text(hjust = 1, size = 22),
+        axis.ticks.y = element_blank(),
+        axis.text.y  = element_blank()) + 
+  transition_time(year)+
+  ease_aes(&#39;cubic-in-out&#39;)
+
+animate(p, nframes = 100, fps = 5, end_pause = 20) #again, use anim_save(filename) to save</code></pre>
+<p><img src="/post/2018-12-14-making-animated-charts-with-gganimate_files/figure-html/GDPpercap_good_plot-1.gif" /><!-- --></p>
+<p>Cool. If i do say so myself :-)</p>
+<p>But wait, we can do more! Rather than bars, let’s plot points as in a scatter plot and watch them float over time. We can start by looking at the co-movement of <strong>GDP per capita</strong> and <strong>unemployment</strong> rates across provinces over time. I pull in the annual LFS data from <code>NDM 14-10-0090</code>, merging the annual unemployment rate values with our GDP per capita data.</p>
+</div>
+<div id="lets-chart-it" class="section level2">
+<h2>Let’s chart it!</h2>
+<pre class="r"><code>p&lt;-ggplot(df.full, 
+       aes(GDPpercap,Unemp_Rate,
+           color=GEO.short, label=GEO.short)) +
+  geom_point(aes(size=pop))+
+  geom_text(hjust=-.2,vjust=-.2)+
+  scale_color_viridis_d(name=&quot;&quot;)+
+  scale_y_continuous(labels=scales::percent)+
+  scale_x_continuous(labels=scales::dollar)+
+  theme_tufte(14,&quot;Avenir&quot;)+
+  theme(legend.position = &quot;none&quot;,
+        plot.caption = element_text(size=9,face=&quot;italic&quot;))+
+  guides(size=F,color=F)+
+  # Here comes the gganimate specific bits
+  labs(title = &#39;Year: {frame_time}&#39;,
+       x = &#39;GDP per capita ($2012)&#39;,
+       y = &quot;Unemployment Rate&quot;,
+       caption=&quot;Bubble size proportional to population\nChart by @bcshaffer&quot;) +
+  transition_time(year) +
+  ease_aes(&#39;linear&#39;)  
+animate(p, nframes = 100, fps = 10, width = 600, height = 400, end_pause = 30)</code></pre>
+<p><img src="/post/2018-12-14-making-animated-charts-with-gganimate_files/figure-html/unemp-1.gif" /><!-- --></p>
+<p>Lastly, we can do the same with the <strong>employment rate</strong>. This time leads add some bread crumbs behind our roving points to get some history.</p>
+<pre class="r"><code>p&lt;-ggplot(df.full, 
+       aes(GDPpercap,Emp_Rate,
+           color=GEO.short, label=GEO.short)) +
+  geom_point(aes(size=pop))+
+  geom_text(hjust=-.2,vjust=-.2)+
+  scale_color_viridis_d(name=&quot;&quot;)+
+  scale_y_continuous(labels=scales::percent)+
+  scale_x_continuous(labels=scales::dollar)+
+  theme_tufte(14,&quot;Avenir&quot;)+
+  theme(legend.position = &quot;none&quot;,
+        plot.caption = element_text(size=9,face=&quot;italic&quot;))+
+  guides(size=F,color=F)+
+  # Here comes the gganimate specific bits
+  labs(title = &#39;Year: {frame_time}&#39;,
+       x = &#39;GDP per capita ($2012)&#39;,
+       y = &quot;Employment Rate&quot;,
+       caption=&quot;Bubble size proportional to population\nChart by @bcshaffer&quot;) +
+  transition_time(year) +
+  shadow_wake(wake_length = 1, exclude_layer = 2)+
+  ease_aes(&#39;cubic-in-out&#39;)
+  #ease_aes(&#39;linear&#39;)  
+animate(p, nframes = 100, fps = 10, width = 600, height = 400, end_pause = 30)</code></pre>
+<p><img src="/post/2018-12-14-making-animated-charts-with-gganimate_files/figure-html/emp-1.gif" /><!-- --></p>
+<p><strong><em>Happy charting!</em></strong></p>
+<p>-Blake</p>
+</div>

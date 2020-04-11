@@ -1,0 +1,195 @@
+---
+title: 'Gasoline demand: BC and the Rest of Canada'
+author: Blake Shaffer
+date: '2018-11-30'
+slug: gasoline-demand-bc-and-the-rest-of-canada
+categories:
+  - energy
+tags: []
+twitterImg: post/2018-11-30-gasoline-demand-bc-and-the-rest-of-canada_files/figure-html/gas_summary-1.png
+header:
+  caption: ''
+  image: ''
+---
+
+
+
+<p>This post looks at gasoline demand across the Canadian provinces and territories. It was prompted by this tweet by <span class="citation">@sjmuir</span>, noting that gasoline demand per capita in BC is unchanged since 2008, the year of implementation of the BC carbon tax.</p>
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="en" dir="ltr">
+It's taboo to point this out, but the fact is that British Columbia residents used as much gasoline in 2017 as they did in 2008. That's why I'm skeptical whenever it's stated that carbon pricing has led to some kind of revolution in fuel usage, because it hasn't. <a href="https://t.co/3IPILHxnTw">pic.twitter.com/3IPILHxnTw</a>
+</p>
+— Stewart Muir (<span class="citation">@sjmuir</span>) <a href="https://twitter.com/sjmuir/status/1068523879331586048?ref_src=twsrc%5Etfw">November 30, 2018</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>The data didn’t fit my prior as I had seen in a <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2778868">recent paper</a> that shows BC gasoline demand per capita falling relative to the rest of Canada.</p>
+<p>So what gives?</p>
+<p>It turns out, a lot has changed since the above referenced paper. Namely, BC gasoline demand has risen quite a bit since 2015. Let’s dig in. I’ll first plot the change in total gasoline demand in each province since 2008:</p>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+library(cansim)
+library(ggrepel)
+library(ggthemes)
+
+## GET EMPLOYMENT DATA
+data.gas &lt;- get_cansim(23100066) %&gt;% 
+  normalize_cansim_values() %&gt;%
+  filter(`Type of fuel sales`==&quot;Net sales of gasoline&quot;,
+         GEO!=&quot;Northwest Territories including Nunavut&quot;) %&gt;%
+  mutate(Year=as.numeric(REF_DATE),
+         Region = case_when(GEO %in% c(&quot;British Columbia&quot;,&quot;Alberta&quot;,&quot;Saskatchewan&quot;) ~ &quot;West&quot;,
+                            GEO %in% c(&quot;Manitoba&quot;,&quot;Ontario&quot;,&quot;Quebec&quot;)  ~ &quot;Central&quot;,
+                            GEO %in% c(&quot;New Brunswick&quot;,&quot;Nova Scotia&quot;,&quot;Prince Edward Island&quot;,&quot;Newfoundland and Labrador&quot;) ~ &quot;East&quot;,
+                            GEO %in% c(&quot;Yukon&quot;,&quot;Northwest Territories&quot;,&quot;Nunavut&quot;) ~ &quot;Territories&quot;,
+                            GEO==&quot;Canada&quot; ~ &quot;CANADA&quot;),
+         GEO.abb = case_when(GEO==&quot;British Columbia&quot; ~ &quot;BC&quot;,
+                             GEO==&quot;Alberta&quot; ~ &quot;AB&quot;,
+                             GEO==&quot;Saskatchewan&quot; ~ &quot;SK&quot;,
+                             GEO==&quot;Manitoba&quot; ~ &quot;MB&quot;,
+                             GEO==&quot;Ontario&quot; ~ &quot;ON&quot;,
+                             GEO==&quot;Quebec&quot; ~ &quot;QC&quot;,
+                             GEO==&quot;New Brunswick&quot; ~ &quot;NB&quot;,
+                             GEO==&quot;Nova Scotia&quot; ~ &quot;NS&quot;,
+                             GEO==&quot;Prince Edward Island&quot; ~ &quot;PE&quot;,
+                             GEO==&quot;Newfoundland and Labrador&quot; ~ &quot;NL&quot;,
+                             GEO==&quot;Yukon&quot; ~ &quot;YT&quot;,
+                             GEO==&quot;Northwest Territories&quot; ~ &quot;NT&quot;,
+                             GEO==&quot;Nunavut&quot; ~ &quot;NU&quot;,
+                             GEO==&quot;Canada&quot; ~ &quot;CAN&quot;)) %&gt;%
+  group_by(GEO) %&gt;%
+  mutate(Index=VALUE/VALUE[Year==2008]) %&gt;%
+  dplyr::select(Year,Date,GEO,GEO.abb,Region,Index,&quot;Gasoline&quot;=VALUE)
+data.gas$Region &lt;- factor(data.gas$Region, levels=c(&quot;CANADA&quot;,&quot;West&quot;,&quot;Central&quot;,&quot;East&quot;,&quot;Territories&quot;))
+
+ggplot()+
+  geom_line(data=data.gas %&gt;% filter(GEO!=&quot;Canada&quot;,GEO!=&quot;Nunavut&quot;,GEO!=&quot;British Columbia&quot;), 
+            aes(Year,Index,group=GEO,color=GEO),
+            size=1)+
+  geom_line(data=data.gas %&gt;% filter(GEO==&quot;British Columbia&quot;),
+            aes(Year,Index),
+            size=2, color=&quot;firebrick&quot;)+
+  geom_label_repel(data=data.gas %&gt;% filter(Year==2017,GEO!=&quot;Canada&quot;,GEO!=&quot;Nunavut&quot;,GEO!=&quot;British Columbia&quot;),
+                   aes(Year, Index, color=GEO, label=GEO.abb),
+                   nudge_x=.5)+
+  geom_label_repel(data=data.gas %&gt;% filter(Year==2017,GEO==&quot;British Columbia&quot;), 
+                   aes(Year, Index, label=GEO.abb),
+                   nudge_x=.5, color=&quot;firebrick&quot;)+
+  geom_hline(yintercept = 1,linetype=&quot;dashed&quot;)+
+  scale_y_continuous(labels=scales::percent)+
+  scale_x_continuous(breaks=seq(2008,2018,2),limits=c(2008,2018))+
+  coord_cartesian(ylim=c(.95,1.4))+
+  scale_color_viridis_d(name=&quot;&quot;)+
+  theme_classic(14,&quot;Gill Sans&quot;)+
+  theme(plot.caption=element_text(size=8,face=&quot;italic&quot;),
+        legend.position = &quot;none&quot;)+
+  labs(x=&quot;&quot;,y=&quot;&quot;,
+       subtitle=&quot;Gasoline demand relative to 2008 (unadjusted for population)&quot;,
+       caption=&quot;Statistics Canada NDM Table 23-10-0066\nChart by @bcshaffer&quot;)</code></pre>
+<p><img src="/post/2018-11-30-gasoline-demand-bc-and-the-rest-of-canada_files/figure-html/gasoline_index-1.png" width="768" /></p>
+<p>It’s a busy chart but there’s a few things to note:</p>
+<ol style="list-style-type: decimal">
+<li>Sask is guzzling the stuff. This isn’t per capita yet, but still!</li>
+<li>Meanwhile, BC, which showed a big dip in 2011-2014 has come roaring back.</li>
+</ol>
+<p>The above chart isn’t per capita. So let’s get quarterly population estimates, annualize them, and create a gasoline_per_capita variable:</p>
+<pre class="r"><code>## GET POPULATION DATA
+data.population &lt;- get_cansim(0510005) %&gt;% 
+  normalize_cansim_values() %&gt;%
+  mutate(Year=year(Date)) %&gt;%
+  dplyr::select(Year,GEO,&quot;Population&quot;=VALUE) %&gt;%
+  group_by(GEO,Year) %&gt;%
+  summarise(Population=mean(Population)) 
+
+## Merge and plot
+plotdata &lt;- left_join(data.gas,data.population,by=c(&quot;Year&quot;,&quot;GEO&quot;))
+plotdata$gas_per_cap &lt;- plotdata$Gasoline/plotdata$Population/365
+ggplot(plotdata, aes(Year,gas_per_cap,group=GEO,color=GEO,label=GEO.abb))+
+  geom_line(size=1.5)+
+  geom_vline(xintercept = 2008,linetype=&quot;dashed&quot;)+
+  geom_label_repel(data=plotdata %&gt;% filter(Year==2017),nudge_x=.5)+
+  facet_wrap(~Region,nrow=1)+
+  scale_x_continuous(breaks=seq(2008,2018,4),limits=c(2008,2019))+
+  scale_color_viridis_d(name=&quot;&quot;,option=&quot;B&quot;)+
+  theme_classic(14,&quot;Gill Sans&quot;)+
+  theme(plot.caption=element_text(size=8,face=&quot;italic&quot;),
+        legend.position = &quot;none&quot;)+
+  labs(x=&quot;&quot;,y=&quot;Litres per day&quot;,
+       subtitle=&quot;Per capita gasoline demand&quot;,
+       caption=&quot;Statistics Canada NDM Table 23-10-0066 and 17-10-0009\nChart by @bcshaffer&quot;)</code></pre>
+<p><img src="/post/2018-11-30-gasoline-demand-bc-and-the-rest-of-canada_files/figure-html/per_capita-1.png" width="960" /></p>
+<p>Another question, is how different economic growth–rather than just population growth–across provinces impacts their gasoline demand. So here we look at <em>gasoline intensity</em>, the ratio of annual gasoline demand (in litres) per thousand dollars of GDP. (Note: I drop the territories as their scale gets wonky. Sorry Territories…)</p>
+<pre class="r"><code>## GET GDP DATA
+data.GDP &lt;- get_cansim(36100222) %&gt;% 
+  normalize_cansim_values() %&gt;%
+  filter(Prices==&quot;Chained (2012) dollars&quot;,
+         Estimates==&quot;Gross domestic product at market prices&quot;) %&gt;%
+  mutate(Year=year(Date)) %&gt;%
+  dplyr::select(Year,GEO,&quot;GDP&quot;=VALUE) 
+
+plotdata &lt;- left_join(plotdata,data.GDP, by=c(&quot;Year&quot;,&quot;GEO&quot;))
+plotdata$gas_intensity &lt;- plotdata$Gasoline / plotdata$GDP * 1000
+plotdata &lt;- plotdata %&gt;% filter(Region!=&quot;Territories&quot;)
+
+ggplot(plotdata, aes(Year,gas_intensity,group=GEO,color=GEO,label=GEO.abb))+
+  geom_line(size=1.5)+
+  geom_vline(xintercept = 2008,linetype=&quot;dashed&quot;)+
+  geom_label_repel(data=plotdata %&gt;% filter(Year==2017),nudge_x=1)+
+  facet_wrap(~Region,nrow=1)+
+  scale_x_continuous(breaks=seq(1995,2015,10),limits=c(1994,2020))+
+  coord_cartesian(ylim=c(16,45))+
+  scale_color_viridis_d(name=&quot;&quot;,option=&quot;B&quot;)+
+  theme_classic(14,&quot;Gill Sans&quot;)+
+  theme(plot.caption=element_text(size=8,face=&quot;italic&quot;),
+        legend.position = &quot;none&quot;)+
+  labs(x=&quot;&quot;,y=&quot;L per $1000 GDP&quot;,
+       subtitle=&quot;Gasoline intensity\n(Gas demand / GDP)&quot;,
+       caption=&quot;Statistics Canada NDM Table 23-10-0066 and 36-10-0222\nChart by @bcshaffer&quot;)</code></pre>
+<p><img src="/post/2018-11-30-gasoline-demand-bc-and-the-rest-of-canada_files/figure-html/gasoline_intensity-1.png" width="960" /></p>
+<p>It’s a little hard to tell in that graph, but in the <strong>West</strong> plot, BC is the line that starts highest and is falling rapidly throughout the period. I’ll re-plot it on one panel here:</p>
+<pre class="r"><code>ggplot()+
+  geom_line(data=plotdata %&gt;% filter(GEO!=&quot;Nunavut&quot;,GEO!=&quot;British Columbia&quot;), 
+            aes(Year,gas_intensity,group=GEO,color=GEO),
+            size=1)+
+  geom_line(data=plotdata %&gt;% filter(GEO==&quot;British Columbia&quot;),
+            aes(Year,gas_intensity),
+            size=2, color=&quot;firebrick&quot;)+
+  geom_label_repel(data=plotdata %&gt;% filter(Year==2017,GEO!=&quot;Nunavut&quot;,GEO!=&quot;British Columbia&quot;),
+                   aes(Year, gas_intensity, color=GEO, label=GEO.abb),
+                   nudge_x=1)+
+  geom_label_repel(data=plotdata %&gt;% filter(Year==2017,GEO==&quot;British Columbia&quot;), 
+                   aes(Year, gas_intensity, label=GEO.abb),
+                   nudge_x=.5, color=&quot;firebrick&quot;)+
+  geom_vline(xintercept = 2008,linetype=&quot;dashed&quot;)+
+  scale_x_continuous(breaks=seq(1995,2015,10),limits=c(1994,2020))+
+  coord_cartesian(ylim=c(16,48))+
+  scale_color_viridis_d(name=&quot;&quot;)+
+  theme_classic(14,&quot;Gill Sans&quot;)+
+  theme(plot.caption=element_text(size=8,face=&quot;italic&quot;),
+        legend.position = &quot;none&quot;)+
+  labs(x=&quot;&quot;,y=&quot;L per $1000 GDP&quot;,
+       subtitle=&quot;Gasoline intensity\n(Gas demand / GDP)&quot;,
+       caption=&quot;Statistics Canada NDM Table 23-10-0066 and 36-10-0222\nChart by @bcshaffer&quot;)</code></pre>
+<p><img src="/post/2018-11-30-gasoline-demand-bc-and-the-rest-of-canada_files/figure-html/gas_intensity_one_chart-1.png" width="576" /></p>
+<p>To summarise, and make it clearer, let’s take a look at just BC and Canada side by side for both gasoline intensity and gasoline per capita:</p>
+<pre class="r"><code>data.summary &lt;- plotdata %&gt;%
+  filter(GEO %in% c(&quot;British Columbia&quot;,&quot;Canada&quot;)) %&gt;%
+  dplyr::select(Year,GEO,GEO.abb,gas_per_cap,gas_intensity) %&gt;%
+  gather(key,value,gas_per_cap,gas_intensity)
+
+ggplot(data.summary, aes(Year,value,group=GEO,color=GEO))+
+  geom_line(size=1.5)+
+  geom_vline(xintercept = 2008,linetype=&quot;dashed&quot;)+
+  facet_wrap(~key,scales=&quot;free_y&quot;)+
+  scale_x_continuous(breaks=seq(1995,2015,5))+
+  scale_color_manual(name=&quot;&quot;,values=c(&quot;forestgreen&quot;,&quot;red&quot;))+
+  theme_classic(12,&quot;Gill Sans&quot;)+
+  theme(plot.caption=element_text(size=8,face=&quot;italic&quot;),
+        legend.position = &quot;top&quot;,
+        legend.text = element_text(size=14),
+        strip.text = element_text(size=12))+
+  labs(x=&quot;&quot;,y=&quot;&quot;,
+       subtitle=&quot;gas_intensity: L/GDP ($&#39;000s)\ngas_per_cap: L/capita/day&quot;,
+       title=&quot;BC vs the Rest of Canada&quot;,
+       caption=&quot;Statistics Canada NDM Table 23-10-0066, 36-10-0222, 17-10-0009\nChart by @bcshaffer&quot;)</code></pre>
+<p><img src="/post/2018-11-30-gasoline-demand-bc-and-the-rest-of-canada_files/figure-html/gas_summary-1.png" width="768" /></p>
+<p><strong>Bottom line: gasoline intensity (the amount of gasoline demand per $1000 of GDP) is falling across the board. That’s a good thing. B.C.’s gasoline intensity is falling more rapidly than the Canadian average. On a per capita basis, despite rising in the past 2 years on the back of strong GDP growth, BC is still falling relative to the Canadian average.</strong></p>
