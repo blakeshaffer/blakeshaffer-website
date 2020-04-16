@@ -14,6 +14,8 @@ subtitle = ""
 weight = 36
 
 +++
+- <a href="https://www.policyschool.ca/wp-content/uploads/2020/04/EE-policy-trends-power-and-covid.pdf" target="blank">Power demand in the time of COVID-19</a>, School of Public Policy, Energy & Environmental Policy Trends, Apri 16, 2020 (with Andrew Leach and Nic Rivers)
+
 - <a href="https://www.cdhowe.org/intelligence-memos/blake-shaffer-%E2%80%93-using-forward-contracts-deliver-reliable-and-affordable-power" target="blank">Using forward contracts to deliver reliable and affordable power</a>, C.D. Howe Intelligence Memo, Oct 18, 2019
 
 - <a href="https://www.policyschool.ca/wp-content/uploads/2019/05/EEPT-Electrick-Vehicle-Rebates-Shaffer-final.pdf" target="blank">Will electric vehicle subsidies spur widespread adoption?</a>, School of Public Policy, Energy & Environmental Policy Trends, May 23, 2019
