@@ -40,6 +40,9 @@ social:
 - icon: github
   icon_pack: fab
   link: https://github.com/blakeshaffer
+- icon: cv
+  icon_pack: ai
+  link: '/files/Blake Shaffer current CV.pdf'
 superuser: true
 user_groups:
 - Researchers

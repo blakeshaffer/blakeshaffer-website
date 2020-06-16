@@ -14,7 +14,9 @@ subtitle = ""
 weight = 36
 
 +++
-- <a href="https://www.policyschool.ca/wp-content/uploads/2020/04/EE-policy-trends-power-and-covid.pdf" target="blank">Power demand in the time of COVID-19</a>, School of Public Policy, Energy & Environmental Policy Trends, Apri 16, 2020 (with Andrew Leach and Nic Rivers)
+- <a href="https://www.cdhowe.org/intelligence-memos/bishop-shaffer-%E2%80%93-electricity-demand-sinks-ontario-power-costs-rise-24-percent" target="blank">As Electricity Demand Sinks, Ontario Power Costs Rise 24 Percent With More to Come</a>, C.D. Howe Intelligence Memo, Apr 21, 2020 (with Grant Bishop)
+
+- <a href="https://www.policyschool.ca/wp-content/uploads/2020/04/EE-policy-trends-power-and-covid.pdf" target="blank">Power demand in the time of COVID-19</a>, School of Public Policy, Energy & Environmental Policy Trends, Apr 16, 2020 (with Andrew Leach and Nic Rivers)
 
 - <a href="https://www.cdhowe.org/intelligence-memos/blake-shaffer-%E2%80%93-using-forward-contracts-deliver-reliable-and-affordable-power" target="blank">Using forward contracts to deliver reliable and affordable power</a>, C.D. Howe Intelligence Memo, Oct 18, 2019
 
