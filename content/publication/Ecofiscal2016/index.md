@@ -12,8 +12,8 @@ image:
   focal_point: ""
   preview_only: false
 projects: []
-publication: '*C.D. Howe Institute Research Paper* 492'
-publication_short: "C.D. Howe Institute Research Paper"
+publication: '*Ecofiscal Commission Position Paper Series on Carbon Pricing Revenue Recycling*'
+publication_short: "Ecofiscal Commission"
 publication_types:
 - "4"
 publishDate: "2016-04-01T00:00:00Z"
