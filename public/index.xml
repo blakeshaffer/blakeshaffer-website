@@ -5,7 +5,7 @@
     <link>/</link>
       <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <description>Blake Shaffer</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© `2020`</copyright><lastBuildDate>Thu, 28 Jun 2018 00:00:00 +0100</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© `2020`</copyright><lastBuildDate>Sat, 01 Jun 2030 13:00:00 +0000</lastBuildDate>
     <image>
       <url>/img/Blake-9943_small.jpg</url>
       <title>Blake Shaffer</title>
@@ -74,22 +74,6 @@
 &lt;/ul&gt;
 &lt;p&gt;Further talk details can easily be added to this page using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
-    </item>
-    
-    <item>
-      <title>Stretching the Duck: How rising temperatures will change the level and shape of future electricity consumption</title>
-      <link>/publication/riversshafferej2020/</link>
-      <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
-      <guid>/publication/riversshafferej2020/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Misunderstanding Nonlinear Prices: Evidence from a Natural Experiment on Residential Electricity Demand</title>
-      <link>/publication/aejpol2020/</link>
-      <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
-      <guid>/publication/aejpol2020/</guid>
-      <description></description>
     </item>
     
     <item>
@@ -1083,24 +1067,6 @@ ggplot(data.caseload.worker, aes(Date,Caseloads))+
 &lt;p&gt;&lt;strong&gt;Resources:&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;I learned R primarily from Hadley Wickham and Garrett Grolemund’s book: &lt;a href=&#34;https://r4ds.had.co.nz/&#34;&gt;R for Data Science&lt;/a&gt;. I highly recommend it. It assumes zero previous R knowledge, even guiding you through where to download the required software, and gets you up and running in no time.&lt;/p&gt;
 &lt;p&gt;For data visualization tips, I really like Claus Wilke’s online book: &lt;a href=&#34;https://serialmentor.com/dataviz/&#34;&gt;Fundamentals of Data Visualization&lt;/a&gt; (with code examples!).&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Privacy Policy</title>
-      <link>/privacy/</link>
-      <pubDate>Thu, 28 Jun 2018 00:00:00 +0100</pubDate>
-      <guid>/privacy/</guid>
-      <description>&lt;p&gt;&amp;hellip;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Terms</title>
-      <link>/terms/</link>
-      <pubDate>Thu, 28 Jun 2018 00:00:00 +0100</pubDate>
-      <guid>/terms/</guid>
-      <description>&lt;p&gt;&amp;hellip;&lt;/p&gt;
 </description>
     </item>
     
