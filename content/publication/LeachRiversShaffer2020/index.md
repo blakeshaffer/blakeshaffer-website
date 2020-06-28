@@ -14,11 +14,11 @@ image:
   focal_point: ""
   preview_only: false
 projects: []
-publication: '*Working Paper*'
-publication_short: "Working Paper"
+publication: '*Canadian Public Policy (forthcoming)*'
+publication_short: "Canadian Public Policy (forthcoming)"
 publication_types:
-- "3"
-publishDate: "2020-06-01T00:00:00Z"
+- "2"
+publishDate: "2020-08-01T00:00:00Z"
 slides:
 summary: "This paper examines the effect of the COVID-19 pandemic on electricity  markets  across  select  Canadian  provinces  with  available  data. Using high frequency electricity data, we find electricity demand declined by roughly 10% in Ontario, and by about 5% in Alberta, British Columbia, and New Brunswick. On the supply side, in Alberta we find reductions from some natural gas plants and an increase in net generation from the oil sands region,  while  Ontario  sees  an  increase  in  net  electricity  exports.  Policy implications include potential rate impacts due to fixed charges spread over a smaller rate base, the potential use of electricity data as a real-time economic indicator during the pandemic, and a call to arms to make electricity data across all Canadian provinces more readily available."
 tags:
