@@ -6,7 +6,7 @@ authors:
 - admin
 - Andrew Leach
 - Nic Rivers
-date: "2020-06-01T00:00:00Z"
+date: "2020-07-01T00:00:00Z"
 doi: ""
 featured: false
 image:
@@ -14,8 +14,8 @@ image:
   focal_point: ""
   preview_only: false
 projects: []
-publication: '*Canadian Public Policy (forthcoming)*'
-publication_short: "Canadian Public Policy (forthcoming)"
+publication: '*Canadian Public Policy*'
+publication_short: "Canadian Public Policy"
 publication_types:
 - "2"
 publishDate: "2020-08-01T00:00:00Z"
@@ -29,7 +29,7 @@ title: "Canadian electricity markets during the COVID-19 pandemic: An initial as
 url_code: ""
 url_dataset: ""
 url_pdf: ""
-url_preprint: ""
+url_preprint: "https://www.utpjournals.press/doi/pdf/10.3138/cpp.2020-060"
 url_poster: ""
 url_project: ""
 url_slides: ""

@@ -11,7 +11,7 @@ interval = 7000
 
 # Slide height (optional).
 # E.g. `500px` for 500 pixels or `calc(100vh - 70px)` for full screen.
-height = "200px"
+height = "300px"
 
 # Slides.
 # Duplicate an `[[item]]` block to add more slides.
@@ -34,6 +34,7 @@ height = "200px"
   #cta_icon_pack = "fas"
   #cta_icon = "graduation-cap"
 
+
 [[item]]
   title = ""
   content = ""
@@ -50,5 +51,51 @@ height = "200px"
 
   #overlay_color = "#333"  # An HTML color value.
   overlay_img = "stanford-crop.jpg"  # Image path relative to your `static/img/` folder.
+  #overlay_filter = 0.5  # Darken the image. Value in range 0-1.
+
+[[item]]
+  title = ""
+  content = ""
+  align = "left"
+
+  #overlay_color = "#333"  # An HTML color value.
+  overlay_img = "larch.jpg"  # Image path relative to your `static/img/` folder.
+  #overlay_filter = 0.5  # Darken the image. Value in range 0-1.
+ 
+[[item]]
+  title = ""
+  content = ""
+  align = "left"
+
+  #overlay_color = "#333"  # An HTML color value.
+  overlay_img = "nosehill-tree.jpg"  # Image path relative to your `static/img/` folder.
+  #overlay_filter = 0.5  # Darken the image. Value in range 0-1.
+
+ 
+[[item]]
+  title = ""
+  content = ""
+  align = "left"
+
+  #overlay_color = "#333"  # An HTML color value.
+  overlay_img = "fernie.jpg"  # Image path relative to your `static/img/` folder.
+  #overlay_filter = 0.5  # Darken the image. Value in range 0-1.
+  
+[[item]]
+  title = ""
+  content = ""
+  align = "left"
+
+  #overlay_color = "#333"  # An HTML color value.
+  overlay_img = "drumheller.jpg"  # Image path relative to your `static/img/` folder.
+  #overlay_filter = 0.5  # Darken the image. Value in range 0-1.
+  
+[[item]]
+  title = ""
+  content = ""
+  align = "left"
+
+  #overlay_color = "#333"  # An HTML color value.
+  overlay_img = "moraine.jpg"  # Image path relative to your `static/img/` folder.
   #overlay_filter = 0.5  # Darken the image. Value in range 0-1.
 +++
