@@ -16,6 +16,8 @@ weight = 38
 +++
 - <a href="https://www.theglobeandmail.com/opinion/article-albertas-government-is-using-coronavirus-as-a-shield-for-laying-off/" target="blank">Alberta’s government is using coronavirus as a shield for laying off education workers</a>, Globe and Mail, Apr 5, 2020 (with Trevor Tombe)
 
+- <a href="https://www.theglobeandmail.com/opinion/article-beyond-pipelines-the-nation-building-project-that-could-electrify/" target="blank">Beyond pipelines: The nation-building project that could electrify Canada</a>, Globe and Mail, Mar 17, 2020 (with Sara Hastings-Simon)
+
 - <a href="https://www.theglobeandmail.com/opinion/article-albertas-carbon-pricing-policy-is-imperfect-but-in-one-significant/" target="blank">Alberta's carbon-pricing policy is imperfect -- but in one significant way, it's actually better than Ottawa's</a>, Globe and Mail, Oct 29, 2019
 
 - <a href="https://theconversation.com/les-canadiens-ont-les-voitures-les-plus-grosses-et-les-plus-energivores-au-monde-116862" target="blank">Les Canadiens ont les voitures les plus grosses et les plus énergivores au monde</a>, The Conversation Canada, May 13, 2019
