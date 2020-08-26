@@ -22,7 +22,7 @@ tags:
 title: "Misunderstanding Nonlinear Prices: Evidence from a Natural Experiment on Residential Electricity Demand"
 url_code: ""
 url_dataset: ""
-url_pdf: "https://www.aeaweb.org/articles?id=10.1257/pol.20180061&&from=f"
+url_pdf: "https://www.aeaweb.org/articles?id=10.1257/pol.20180061"
 url_preprint: "SHAFFER_AEJPol_FINAL.pdf"
 url_poster: ""
 url_project: ""

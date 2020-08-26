@@ -25,7 +25,7 @@ tags:
 title: "Stretching the Duck: How rising temperatures will change the level and shape of future electricity consumption"
 url_code: ""
 url_dataset: ""
-url_pdf: ""
+url_pdf: "https://www.iaee.org/energyjournal/article/3552"
 url_preprint: "Rivers_Shaffer_EJ_FINAL.pdf"
 url_poster: ""
 url_project: ""
