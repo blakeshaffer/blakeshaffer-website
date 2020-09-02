@@ -14,6 +14,8 @@ subtitle = ""
 weight = 38
 
 +++
+- <a href="https://www.cbc.ca/news/canada/calgary/alberta-crude-by-rail-1.5706160" target="blank">On the wrong track: Alberta loses $2.1B on crude-by-rail contracts</a>, CBC, Sep 1, 2020
+
 - <a href="https://www.theglobeandmail.com/opinion/article-albertas-government-is-using-coronavirus-as-a-shield-for-laying-off/" target="blank">Alberta’s government is using coronavirus as a shield for laying off education workers</a>, Globe and Mail, Apr 5, 2020 (with Trevor Tombe)
 
 - <a href="https://www.theglobeandmail.com/opinion/article-beyond-pipelines-the-nation-building-project-that-could-electrify/" target="blank">Beyond pipelines: The nation-building project that could electrify Canada</a>, Globe and Mail, Mar 17, 2020 (with Sara Hastings-Simon)
