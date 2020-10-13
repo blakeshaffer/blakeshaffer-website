@@ -19,7 +19,7 @@ interests:
 - Climate policy
 - Energy transitions
 name: Blake Shaffer
-role: Assistant Professor of Economics and Public Policy
+role: Assistant Professor
 organizations:
 - name: Department of Economics
   url: "http://econ.ucalgary.ca"
