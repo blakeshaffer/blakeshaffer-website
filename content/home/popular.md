@@ -14,6 +14,8 @@ subtitle = ""
 weight = 38
 
 +++
+- <a href="https://www.cbc.ca/news/canada/calgary/road-ahead-alberta-coal-power-electricity-decline-1.5761858" target="blank">Alberta's shift away from coal power is a climate action success story</a>, CBC, Oct 15, 2020 (with Andrew Leach)
+
 - <a href="https://www.cbc.ca/news/canada/calgary/alberta-crude-by-rail-1.5706160" target="blank">On the wrong track: Alberta loses $2.1B on crude-by-rail contracts</a>, CBC, Sep 1, 2020
 
 - <a href="https://www.theglobeandmail.com/opinion/article-albertas-government-is-using-coronavirus-as-a-shield-for-laying-off/" target="blank">Alberta’s government is using coronavirus as a shield for laying off education workers</a>, Globe and Mail, Apr 5, 2020 (with Trevor Tombe)
