@@ -14,6 +14,14 @@ subtitle = ""
 weight = 38
 
 +++
+- <a href="https://theconversation.com/comment-le-canada-peut-fournir-une-energie-propre-et-fiable-grace-aux-macroreseaux-electriques-156025" target="blank">Comment le Canada peut fournir une énergie propre et fiable grâce aux macroréseaux électriques</a>, The Conversation Canada, March 4, 2021 (with Brett Dolter, Kent Fellows and Nic Rivers)
+
+- <a href="https://theconversation.com/why-canada-should-invest-in-macrogrids-for-greener-more-reliable-electricity-155713" target="blank">Why Canada should invest in ‘macrogrids’ for greener more reliable electricity</a>, The Conversation Canada, Feb 24, 2021 (with Brett Dolter, Kent Fellows and Nic Rivers)
+
+- <a href="https://www.cbc.ca/news/canada/calgary/road-ahead-texas-power-outages-lessons-for-alberta-1.5917052" target="blank">Lessons for Alberta from the Texas power blackout</a>, CBC, Feb 24, 2021 (with Joshua Rhodes)
+
+- <a href="https://www.cbc.ca/news/canada/calgary/road-ahead-alberta-bc-electricity-bridge-interties-1.5848042" target="blank">Bridging the electricity gap between Alberta and B.C. makes perfect climate sense</a>, CBC, Dec 22, 2020 (with Mark Jaccard)
+
 - <a href="https://www.cbc.ca/news/canada/calgary/road-ahead-alberta-coal-power-electricity-decline-1.5761858" target="blank">Alberta's shift away from coal power is a climate action success story</a>, CBC, Oct 15, 2020 (with Andrew Leach)
 
 - <a href="https://www.cbc.ca/news/canada/calgary/alberta-crude-by-rail-1.5706160" target="blank">On the wrong track: Alberta loses $2.1B on crude-by-rail contracts</a>, CBC, Sep 1, 2020
