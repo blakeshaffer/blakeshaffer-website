@@ -16,11 +16,6 @@ weight = 36
 +++
 - <a href="https://www.policyschool.ca/wp-content/uploads/2021/03/EEP-trends-Shaffer.pdf" target="blank">Valuing Alberta's Renewable Electricity Program</a>, School of Public Policy, Energy & Environmental Policy Trends, Mar 18, 2021 (with Sara Hastings-Simon)
 
-weight = 36
-
-+++
-- <a href="https://www.policyschool.ca/wp-content/uploads/2021/03/EEP-trends-Shaffer.pdf" target="blank">Valuing Alberta's Renewable Electricity Program</a>, School of Public Policy, Energy & Environmental Policy Trends, Mar 18, 2021 (with Sara Hastings-Simon)
-
 - <a href="https://www.cdhowe.org/intelligence-memos/shaffer-rhodes-%E2%80%93-three-fixes-canadian-energy-policy-avoid-texas%E2%80%99-energy-troubles" target="blank">Three Fixes for Canadian Energy Policy to Avoid Texas’ Energy Troubles</a>, C.D. Howe Intelligence Memo, Feb 19, 2021 (with Joshia Rhodes)
 
 - <a href="https://www.policyschool.ca/wp-content/uploads/2020/11/Energy-Trends-Renewables-Nov.pdf" target="blank">Cheap renewables have arrived</a>, School of Public Policy, Energy & Environmental Policy Trends, Nov 22, 2020 (with Nick Schumacher, Victoria Goodday and Jen Winter)
