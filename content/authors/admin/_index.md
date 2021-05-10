@@ -33,7 +33,7 @@ social:
   link: '#contact'
 - icon: twitter
   icon_pack: fab
-  link: https://twitter.com/bshaffer
+  link: https://twitter.com/bcshaffer
 - icon: google-scholar
   icon_pack: ai
   link: https://scholar.google.ca/citations?user=lHYJh2oAAAAJ&hl=en
