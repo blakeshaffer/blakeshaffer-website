@@ -14,6 +14,8 @@ subtitle = ""
 weight = 38
 
 +++
+- <a href="hhttps://www.theglobeandmail.com/opinion/article-if-you-got-an-astrazeneca-covid-19-vaccine-you-made-the-right-decision/" target="blank">If you got an AstraZeneca COVID-19 vaccine, you made the right decision, according to economics</a>, Globe and Mail, May 12, 2021 (with Stephen Gordon, Andrew Leach, Christine Neill, Tammy Schirle and Trevor Tombe)
+
 - <a href="https://theconversation.com/comment-le-canada-peut-fournir-une-energie-propre-et-fiable-grace-aux-macroreseaux-electriques-156025" target="blank">Comment le Canada peut fournir une énergie propre et fiable grâce aux macroréseaux électriques</a>, The Conversation Canada, March 4, 2021 (with Brett Dolter, Kent Fellows and Nic Rivers)
 
 - <a href="https://theconversation.com/why-canada-should-invest-in-macrogrids-for-greener-more-reliable-electricity-155713" target="blank">Why Canada should invest in ‘macrogrids’ for greener more reliable electricity</a>, The Conversation Canada, Feb 24, 2021 (with Brett Dolter, Kent Fellows and Nic Rivers)
