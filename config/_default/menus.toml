@@ -45,3 +45,10 @@
   name = "CV"
   url = "files/Blake Shaffer current CV.pdf"
   weight = 70
+  
+  # Link to a PDF of disclosure from the menu.
+# To enable, copy your disclosure to `static/files/cv.pdf` and uncomment the lines below.
+[[main]]
+  name = "Disclosure Statement"
+  url = "files/COI disclosure.pdf"
+  weight = 80
